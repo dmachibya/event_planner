@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:lawyers/screens/LoginScreen.dart';
-import 'package:lawyers/screens/RegisterScreen.dart';
-import 'package:lawyers/screens/landing_screen.dart';
-import 'package:lawyers/utils/constants.dart';
+import 'package:event_planner/screens/LoginScreen.dart';
+import 'package:event_planner/screens/RegisterScreen.dart';
+import 'package:event_planner/screens/landing_screen.dart';
+import 'package:event_planner/screens/successful_screen.dart';
+import 'package:event_planner/utils/constants.dart';
 import 'package:splash_screen_view/SplashScreenView.dart';
 
 class AppRoute {
@@ -28,7 +29,7 @@ class AppRoute {
         });
       case homeRoute:
         return MaterialPageRoute(builder: (BuildContext context) {
-          return Container(child: Text("Logged IN"));
+          return const SuccessfulScreen();
         });
       default:
         return MaterialPageRoute(

@@ -1,123 +1,133 @@
 import 'package:flutter/material.dart';
-import 'package:lawyers/utils/constants.dart';
+import 'package:event_planner/utils/constants.dart';
+// import 'login_screen.dart';
+// import 'signup_screen.dart';
 
-class LandingScreen extends StatefulWidget {
-  LandingScreen({Key? key}) : super(key: key);
+class LandingScreen extends StatelessWidget {
+  // static const routeName = '/welcome-screen';
 
-  @override
-  State<LandingScreen> createState() => _LandingScreenState();
-}
-
-class _LandingScreenState extends State<LandingScreen> {
-  var size, height, width;
-  var paddingRatio = 0.05;
+  /*
+  Widget routeButton(Color buttonColor, String title, Color textColor, BuildContext context) {
+    return Container(
+      height: 80,
+      width: double.infinity,
+      padding: const EdgeInsets.only(top: 25, left: 24, right: 24),
+      child: RaisedButton(
+        elevation: 0,
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(25)),
+        color: buttonColor,
+        onPressed: () => context,
+        child: Text(title, style: TextStyle(fontSize: 20, fontWeight: FontWeight.w700, color: textColor,),),
+      ),
+    );
+  }
+  */
+  var width, height, size;
 
   @override
   Widget build(BuildContext context) {
     size = MediaQuery.of(context).size;
-    height = size.height;
     width = size.width;
+    height = size.height;
 
     return Scaffold(
-      body: Stack(children: [
-        Image.asset("images/bg.jpg",
-            fit: BoxFit.cover, width: width, height: height),
-        Container(
-          width: width,
-          height: height,
-          decoration: BoxDecoration(color: Colors.black.withOpacity(0.7)),
-        ),
-        Container(
-          padding: EdgeInsets.symmetric(horizontal: width * paddingRatio),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
+      body: Stack(
+        children: [
+          Container(
+            decoration: BoxDecoration(
+              image: DecorationImage(
+                  image: AssetImage('images/bg.jpg'), fit: BoxFit.cover),
+            ),
+          ),
+          Container(
+            color: Colors.black.withOpacity(0.6),
+            width: double.infinity,
+            height: height,
+          ),
+          Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              const Text(
-                "Find A Lawyer",
-                style: TextStyle(fontSize: 32, color: Colors.white),
-              ),
-              const SizedBox(
-                height: 6,
-              ),
-              const Text(
-                "\"Law services on your fingertips\"",
-                style: TextStyle(fontSize: 16, color: Colors.white),
-              ),
-              SizedBox(
-                height: 16,
-              ),
-              DecoratedBox(
-                  decoration: BoxDecoration(
-                      border: Border.all(color: Colors.blue, width: 2),
-                      borderRadius: BorderRadius.circular(30),
-                      boxShadow: const <BoxShadow>[
-                        BoxShadow(
-                            color: Color.fromRGBO(
-                                0, 0, 0, 0.3), //shadow for button
-                            blurRadius: 5) //blur radius of shadow
-                      ]),
-                  child: ElevatedButton(
-                      style: ElevatedButton.styleFrom(
-                        primary: Colors.transparent,
-                        onSurface: Colors.transparent,
-                        shadowColor: Colors.transparent,
-                        //make color or elevated button transparent
+              Expanded(
+                flex: 6,
+                child: Padding(
+                  padding: const EdgeInsets.only(top: 60, left: 25),
+                  child: Column(
+                    children: [
+                      Text(
+                        'Event Reservation',
+                        style: TextStyle(
+                            fontSize: 32,
+                            fontWeight: FontWeight.bold,
+                            color: Colors.white),
                       ),
-                      onPressed: () {
-                        Navigator.pushNamed(context, loginRoute);
-                      },
-                      child: Container(
-                        alignment: Alignment.center,
-                        width: double.infinity,
-                        padding: EdgeInsets.only(
-                          top: 18,
-                          bottom: 18,
+                      Text(
+                        'Welcome, reserve events locations with easy',
+                        style: TextStyle(
+                            fontSize: 18,
+                            fontStyle: FontStyle.italic,
+                            color: Colors.white),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+              Expanded(
+                flex: 3,
+                child: Column(
+                  children: [
+                    Container(
+                      height: 80,
+                      width: double.infinity,
+                      padding:
+                          const EdgeInsets.only(top: 25, left: 24, right: 24),
+                      child: RaisedButton(
+                        onPressed: () =>
+                            Navigator.of(context).pushNamed(loginRoute),
+                        elevation: 0,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(25),
                         ),
+                        color: Colors.indigo,
                         child: Text(
-                          "Login",
-                          style: TextStyle(color: Colors.blue),
+                          'Log In',
+                          style: TextStyle(
+                            fontSize: 20,
+                            fontWeight: FontWeight.w700,
+                            color: Colors.white,
+                          ),
                         ),
-                      ))),
-              SizedBox(
-                height: 8,
-              ),
-              DecoratedBox(
-                  decoration: BoxDecoration(
-                      gradient: LinearGradient(colors: [
-                        Colors.blue,
-                        Colors.blue.shade300,
-                        //add more colors
-                      ]),
-                      borderRadius: BorderRadius.circular(30),
-                      boxShadow: const <BoxShadow>[
-                        BoxShadow(
-                            color: Color.fromRGBO(
-                                0, 0, 0, 0.3), //shadow for button
-                            blurRadius: 5) //blur radius of shadow
-                      ]),
-                  child: ElevatedButton(
-                      style: ElevatedButton.styleFrom(
-                        primary: Colors.transparent,
-                        onSurface: Colors.transparent,
-                        shadowColor: Colors.transparent,
-                        //make color or elevated button transparent
                       ),
-                      onPressed: () {
-                        Navigator.pushNamed(context, registerRoute);
-                      },
-                      child: Container(
-                        alignment: Alignment.center,
-                        width: double.infinity,
-                        padding: EdgeInsets.only(
-                          top: 18,
-                          bottom: 18,
+                    ),
+                    Container(
+                      height: 80,
+                      width: double.infinity,
+                      padding:
+                          const EdgeInsets.only(top: 25, left: 24, right: 24),
+                      child: RaisedButton(
+                        elevation: 0,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(25),
                         ),
-                        child: Text("Register"),
-                      ))),
+                        color: Colors.white,
+                        onPressed: () =>
+                            Navigator.of(context).pushNamed(registerRoute),
+                        child: Text(
+                          'Sign Up',
+                          style: TextStyle(
+                            fontSize: 20,
+                            fontWeight: FontWeight.w700,
+                            color: Colors.indigo.shade800,
+                          ),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
             ],
           ),
-        )
-      ]),
+        ],
+      ),
     );
   }
 }

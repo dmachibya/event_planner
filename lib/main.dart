@@ -1,7 +1,7 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
-import 'package:lawyers/utils/AppRouter.dart';
-import 'package:lawyers/utils/constants.dart';
+import 'package:event_planner/utils/AppRouter.dart';
+import 'package:event_planner/utils/constants.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
