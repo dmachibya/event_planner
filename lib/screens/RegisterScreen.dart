@@ -111,6 +111,9 @@ class RegisterScreen extends StatelessWidget {
                           onPressed: () {
                             AuthenticationHelper()
                                 .signUp(
+                                    phone: phoneController.text,
+                                    role: 'normal',
+                                    name: nameController.text,
                                     email: emailController.text,
                                     password: passwordController.text)
                                 .then((value) => {
@@ -121,8 +124,12 @@ class RegisterScreen extends StatelessWidget {
                                         }
                                       else
                                         {
-                                          Scaffold.of(context).showSnackBar(
-                                              SnackBar(content: Text(value)))
+                                          ScaffoldMessenger.of(context)
+                                              .showSnackBar(SnackBar(
+                                            content: Text(value,
+                                                style: TextStyle(fontSize: 16)),
+                                            duration: Duration(seconds: 5),
+                                          )),
                                         }
                                     });
                           },

@@ -1,33 +1,33 @@
 {
   "project_info": {
-    "project_number": "252770710938",
-    "project_id": "event-planner-5d3cb",
-    "storage_bucket": "event-planner-5d3cb.appspot.com"
+    "project_number": "965093835849",
+    "project_id": "event-reservation-app",
+    "storage_bucket": "event-reservation-app.appspot.com"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:252770710938:android:e81b9359e006f85a86b623",
+        "mobilesdk_app_id": "1:965093835849:android:81a25160050b3a56732b98",
         "android_client_info": {
           "package_name": "com.example.event_planner"
         }
       },
       "oauth_client": [
         {
-          "client_id": "252770710938-ohb7s9oicrrful727jgvc08gvk5ukusq.apps.googleusercontent.com",
+          "client_id": "965093835849-fduis0ehrcen8msmlsbflje9ujsn821r.apps.googleusercontent.com",
           "client_type": 3
         }
       ],
       "api_key": [
         {
-          "current_key": "AIzaSyCZx4sSGnBNn60PbwgntgRHxawoSC_cFrg"
+          "current_key": "AIzaSyBFSN1AkitD78jdp-PAOz1D-IS4viuRP9E"
         }
       ],
       "services": {
         "appinvite_service": {
           "other_platform_oauth_client": [
             {
-              "client_id": "252770710938-ohb7s9oicrrful727jgvc08gvk5ukusq.apps.googleusercontent.com",
+              "client_id": "965093835849-fduis0ehrcen8msmlsbflje9ujsn821r.apps.googleusercontent.com",
               "client_type": 3
             }
           ]
