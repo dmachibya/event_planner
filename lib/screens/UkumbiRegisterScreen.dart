@@ -17,6 +17,8 @@ class _UkumbiRegisterScreenState extends State<UkumbiRegisterScreen> {
   DB _db = new DB();
   File? _photo;
   bool _imageStartSelection = false;
+  File? _photo2;
+  bool _imageStartSelection2 = false;
   final _formKey = GlobalKey<FormState>();
   bool categoryError = false;
   final userId = AuthenticationHelper().user.uid;
@@ -116,10 +118,8 @@ class _UkumbiRegisterScreenState extends State<UkumbiRegisterScreen> {
                       padding: EdgeInsets.all(8),
                       margin: EdgeInsets.all(8),
                       child: TextFormField(
-                        onChanged: (v){
-                          if(_imageStartSelection){
-
-                          }
+                        onChanged: (v) {
+                          if (_imageStartSelection) {}
                         },
                         onTap: () async {
                           _imageStartSelection = true;
@@ -128,7 +128,30 @@ class _UkumbiRegisterScreenState extends State<UkumbiRegisterScreen> {
                         keyboardType: TextInputType.none,
                         decoration: InputDecoration(label: Text("Image")),
                       )),
-                      _imageStartSelection?Container(child: Text("Image Selected"),):Container(),
+                  _imageStartSelection
+                      ? Container(
+                          child: Text("Image Selected"),
+                        )
+                      : Container(),
+                  Container(
+                      padding: EdgeInsets.all(8),
+                      margin: EdgeInsets.all(8),
+                      child: TextFormField(
+                        onChanged: (v) {
+                          if (_imageStartSelection2) {}
+                        },
+                        onTap: () async {
+                          _imageStartSelection2 = true;
+                          _photo2 = await _db.imgFromGallery();
+                        },
+                        keyboardType: TextInputType.none,
+                        decoration: InputDecoration(label: Text("Image")),
+                      )),
+                  _imageStartSelection2
+                      ? Container(
+                          child: Text("Image Selected"),
+                        )
+                      : Container(),
                   Container(
                     padding: EdgeInsets.all(8),
                     margin: EdgeInsets.all(8),
@@ -147,7 +170,11 @@ class _UkumbiRegisterScreenState extends State<UkumbiRegisterScreen> {
                                     "location": locationController.text,
                                     "name": nameController.text,
                                     "image": _photo!.path,
+                                    "image2": _photo2!.path,
                                     "uid": AuthenticationHelper().user.uid,
+                                  },
+                                  onErr: () {
+                                    print("Error when create ukumbi occured");
                                   },
                                   docsId: AuthenticationHelper().user.uid);
                               _db.uploadFile(
@@ -156,8 +183,13 @@ class _UkumbiRegisterScreenState extends State<UkumbiRegisterScreen> {
                                           .millisecondsSinceEpoch
                                           .toString() +
                                       userId);
+                              _db.uploadFile(
+                                  photo: _photo,
+                                  userId: DateTime.now()
+                                          .millisecondsSinceEpoch
+                                          .toString() +
+                                      userId);
                             }
-                            print("deem you");
                           }
                         },
                       ),

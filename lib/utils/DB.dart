@@ -26,13 +26,17 @@ class DB {
   Future<bool> create(
       {required String collection,
       required String docsId,
-      required Map<String, dynamic> data}) async {
+      required Map<String, dynamic> data,
+      required void Function() onErr
+      }) async {
     // just use await and use if statement to check if created
     bool created = true;
     await db
         .collection(collection)
         .doc(docsId)
-        .set({...data}).onError((error, stackTrace) => {created = false});
+        .set({...data}).onError((error, stackTrace) => {
+          onErr()
+        });
     return created;
   }
 
