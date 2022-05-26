@@ -1,4 +1,5 @@
 import 'package:event_planner/models/Ukumbi.dart';
+import 'package:event_planner/screens/UkumbiListView.dart';
 import 'package:event_planner/screens/UkumbiRegisterScreen.dart';
 import 'package:flutter/material.dart';
 import 'package:event_planner/screens/LoginScreen.dart';
@@ -43,6 +44,10 @@ class AppRoute {
         return MaterialPageRoute(builder: (BuildContext context) {
           Ukumbi ukumbi = settings.arguments as Ukumbi;
           return UkumbiDetailScreen(ukumbi:ukumbi);
+        });
+      case ukumbiListView:
+        return MaterialPageRoute(builder: (BuildContext context) {
+          return UkumbiListView();
         });
       default:
         return MaterialPageRoute(

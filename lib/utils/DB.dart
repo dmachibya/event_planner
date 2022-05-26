@@ -2,6 +2,7 @@ import 'dart:io';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:firebase_storage/firebase_storage.dart' as firebase_storage;
+
 import 'package:path/path.dart';
 
 class DB {
@@ -11,7 +12,7 @@ class DB {
       firebase_storage.FirebaseStorage.instance;
   Future<bool> update(
       {required String collection,
-      String docsId = "",
+      required String docsId,
       required Map<String, dynamic> data}) async {
     //just use await and use if statement to check if updated
     bool updated = true;
@@ -27,16 +28,13 @@ class DB {
       {required String collection,
       required String docsId,
       required Map<String, dynamic> data,
-      required void Function() onErr
-      }) async {
+      required void Function() onErr}) async {
     // just use await and use if statement to check if created
     bool created = true;
     await db
         .collection(collection)
         .doc(docsId)
-        .set({...data}).onError((error, stackTrace) => {
-          onErr()
-        });
+        .set({...data}).onError((error, stackTrace) => {onErr(),created=false});
     return created;
   }
 
@@ -73,12 +71,21 @@ class DB {
 
   Future<DocumentSnapshot<Map<String, dynamic>>> select(
       {required String collection, required String document}) async {
+        // this method returns type _JsonQueryDocumentSnapshot to access
+        // the data from it use snapshot.data.data() to get the data of the document
     return await db.collection(collection).doc(document).get();
   }
 
   Future<QuerySnapshot<Map<String, dynamic>>> selectAllDocumentOnCollection(
       String collection) async {
-    return await db.collection("cities").get();
+    //this function return type _JsonQuerySnapshot which is an array
+    //to access them use snapshot.data.docs to get all the docs then
+    //in each doc to access the data use snapshot.data.docs[0].data()
+    //you will get the data of the document
+    // also you can cast the data to list inorder to use .map() function
+    //example var data= datasnapshot.data.docs as List<dynamic>;
+    // data.map((document)=>{});
+    return await db.collection(collection).get();
   }
 
   Future<QuerySnapshot<Map<String, dynamic>>> where(
@@ -172,14 +179,22 @@ class DB {
     final pickedFile = await _picker.pickImage(source: ImageSource.gallery);
 
     if (pickedFile != null) {
-     return File(pickedFile.path);
+      return File(pickedFile.path);
     } else {
       return null;
     }
   }
+  Future<String> getDownloadImageOrFileUrl(String url)async{
+    firebase_storage.Reference ref =
+        firebase_storage.FirebaseStorage.instance.ref().child(url);
+    return await ref.getDownloadURL();
+  }
 
-  Future<String> uploadFile({required File? photo,required String userId, String destination='/'}) async {
-    if(photo == null){
+  Future<String> uploadFile(
+      {required File? photo,
+      required String userId,
+      String destination = '/'}) async {
+    if (photo == null) {
       print('No Image selected');
       return "null";
     }
@@ -189,7 +204,7 @@ class DB {
     try {
       final ref = firebase_storage.FirebaseStorage.instance
           .ref(destination)
-          .child( userId+ "." + extension);
+          .child(userId + "." + extension);
       await ref.putFile(photo);
       return await ref.getDownloadURL();
       // db

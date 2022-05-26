@@ -13,7 +13,7 @@ class _UkumbiDetailScreenState extends State<UkumbiDetailScreen> {
   @override
   Widget build(BuildContext context) {
     return Container(
-      child: Center(child: Text(widget.ukumbi.name)),
+      child: Center(child: Text(widget.ukumbi.uid)),
     );
   }
 }

@@ -15,7 +15,10 @@ class SuccessfulScreen extends StatelessWidget {
           ),
           ElevatedButton(onPressed: (){
             Navigator.pushNamed(context, ukumbiRegisterScreen);
-          }, child: Text("Register Ukumbi"))
+          }, child: Text("Register Ukumbi")),
+          ElevatedButton(onPressed: (){
+            Navigator.pushNamed(context, ukumbiListView);
+          }, child: Text("Ukumbi List")),
         ]),
       ),
     );

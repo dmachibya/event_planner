@@ -162,33 +162,31 @@ class _UkumbiRegisterScreenState extends State<UkumbiRegisterScreen> {
                           if (_formKey.currentState!.validate()) {
                             if (categoryController.text == '' ||
                                 categoryController.text == null) {
-                              _db.create(
+                              var imagePath = await _db.uploadFile(
+                                  photo: _photo,
+                                  userId: DateTime.now()
+                                          .millisecondsSinceEpoch
+                                          .toString() +
+                                      userId);
+                              var image2Path = await _db.uploadFile(
+                                  photo: _photo,
+                                  userId: DateTime.now()
+                                          .millisecondsSinceEpoch
+                                          .toString() +
+                                      userId);
+                              _db.createRandomId(
                                   collection: "ukumbi",
                                   data: {
-                                    "category": categoryController.text,
+                                    "category": categoryController.text.length <=0 ?"Sherehe":categoryController.text,
                                     "about": aboutController.text,
                                     "location": locationController.text,
                                     "name": nameController.text,
-                                    "image": _photo!.path,
-                                    "image2": _photo2!.path,
-                                    "uid": AuthenticationHelper().user.uid,
-                                  },
-                                  onErr: () {
-                                    print("Error when create ukumbi occured");
-                                  },
-                                  docsId: AuthenticationHelper().user.uid);
-                              _db.uploadFile(
-                                  photo: _photo,
-                                  userId: DateTime.now()
-                                          .millisecondsSinceEpoch
-                                          .toString() +
-                                      userId);
-                              _db.uploadFile(
-                                  photo: _photo,
-                                  userId: DateTime.now()
-                                          .millisecondsSinceEpoch
-                                          .toString() +
-                                      userId);
+                                    "isBooked": false,
+                                    "isBookedDate": null,
+                                    "image": imagePath,
+                                    "image2": image2Path,
+                                    "user_id": AuthenticationHelper().user.uid,
+                                  },);
                             }
                           }
                         },
