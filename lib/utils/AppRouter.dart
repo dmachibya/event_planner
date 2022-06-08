@@ -34,7 +34,7 @@ class AppRoute {
         });
       case homeRoute:
         return MaterialPageRoute(builder: (BuildContext context) {
-          return const SuccessfulScreen();
+          return SuccessfulScreen();
         });
       case ukumbiRegisterScreen:
         return MaterialPageRoute(builder: (BuildContext context) {
@@ -43,7 +43,7 @@ class AppRoute {
       case ukumbiDetailScreen:
         return MaterialPageRoute(builder: (BuildContext context) {
           Ukumbi ukumbi = settings.arguments as Ukumbi;
-          return UkumbiDetailScreen(ukumbi:ukumbi);
+          return UkumbiDetailScreen(ukumbi: ukumbi);
         });
       case ukumbiListView:
         return MaterialPageRoute(builder: (BuildContext context) {
