@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:event_planner/components/CustomeDrawer.dart';
 import 'package:event_planner/components/banner_carousel.dart';
 import 'package:event_planner/screens/UkumbiDetailScreen.dart';
 import 'package:event_planner/screens/UkumbiRegisterScreen.dart';
@@ -14,49 +15,7 @@ class SuccessfulScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      drawer: Drawer(
-          child: Column(children: [
-        DrawerHeader(
-            child: Container(
-                width: double.infinity,
-                height: 40,
-                // decoration: BoxDecoration(
-                //     borderRadius: BorderRadius.circular(100),
-                //     color: Colors.grey),
-                child: Icon(Icons.person))),
-        ListTile(
-          leading: Icon(Icons.add),
-          title: Text("New Ukumbi"),
-          onTap: () {
-            Navigator.push(
-                context,
-                MaterialPageRoute(
-                    builder: (context) => UkumbiRegisterScreen()));
-          },
-        ),
-        ListTile(
-          leading: Icon(Icons.calendar_month),
-          title: Text("Bookings"),
-          onTap: () {
-            // Navigator.push(
-            //     context,
-            //     MaterialPageRoute(
-            //         builder: (context) => UkumbiRegisterScreen()));
-          },
-        ),
-        ListTile(
-          leading: Icon(Icons.logout),
-          title: Text("Log Out"),
-          onTap: () {
-            AuthenticationHelper().signOut();
-            Navigator.pushNamed(context, loginRoute);
-            // Navigator.push(
-            //     context,
-            //     MaterialPageRoute(
-            //         builder: (context) => UkumbiRegisterScreen()));
-          },
-        ),
-      ])),
+      drawer: CustomHomeDrawer(),
       appBar: AppBar(title: Text("Event Reservation")),
       body: Container(
           padding: EdgeInsets.symmetric(vertical: 20, horizontal: 16),

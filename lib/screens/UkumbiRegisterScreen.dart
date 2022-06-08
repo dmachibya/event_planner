@@ -1,5 +1,6 @@
 import 'package:event_planner/components/CustomeDrawer.dart';
 import 'package:event_planner/models/Ukumbi.dart';
+import 'package:event_planner/screens/successful_screen.dart';
 import 'package:event_planner/utils/authentication.dart';
 import 'package:event_planner/utils/constants.dart';
 import 'package:event_planner/utils/DB.dart';
@@ -175,18 +176,28 @@ class _UkumbiRegisterScreenState extends State<UkumbiRegisterScreen> {
                                           .toString() +
                                       userId);
                               _db.createRandomId(
-                                  collection: "ukumbi",
-                                  data: {
-                                    "category": categoryController.text.length <=0 ?"Sherehe":categoryController.text,
-                                    "about": aboutController.text,
-                                    "location": locationController.text,
-                                    "name": nameController.text,
-                                    "isBooked": false,
-                                    "isBookedDate": null,
-                                    "image": imagePath,
-                                    "image2": image2Path,
-                                    "user_id": AuthenticationHelper().user.uid,
-                                  },);
+                                collection: "ukumbi",
+                                data: {
+                                  "category":
+                                      categoryController.text.length <= 0
+                                          ? "Sherehe"
+                                          : categoryController.text,
+                                  "about": aboutController.text,
+                                  "location": locationController.text,
+                                  "name": nameController.text,
+                                  "isBooked": false,
+                                  "isBookedDate": null,
+                                  "image": imagePath,
+                                  "image2": image2Path,
+                                  "user_id": AuthenticationHelper().user.uid,
+                                },
+                              ).then((value) => {
+                                    Navigator.push(
+                                        context,
+                                        MaterialPageRoute(
+                                            builder: (context) =>
+                                                SuccessfulScreen()))
+                                  });
                             }
                           }
                         },
