@@ -201,9 +201,7 @@ class _UkumbiDetailScreenState extends State<UkumbiDetailScreen> {
                                 ],
                               ),
                             );
-                            if (widget.ukumbi.get('acceptedUser') != null &&
-                                widget.ukumbi.get('isBookedDate').contains(
-                                    selectedBookingDateController.text)) {
+                            if (false) {
                               ScaffoldMessenger.of(context).showSnackBar(
                                 SnackBar(
                                   content: Text(
@@ -214,9 +212,9 @@ class _UkumbiDetailScreenState extends State<UkumbiDetailScreen> {
                             } else {
                               try {
                                 if (result != null && result == true) {
-                                  List array =
-                                      widget.ukumbi.get('isBookedDate');
-                                  array.add(selectedBookingDateController.text);
+                                  // List array =
+                                  //     widget.ukumbi.get('isBookedDate');
+                                  // array.add(selectedBookingDateController.text);
                                   bool updated = await _db.update(
                                       collection: "ukumbi",
                                       docsId: widget.ukumbi.id,
@@ -224,7 +222,7 @@ class _UkumbiDetailScreenState extends State<UkumbiDetailScreen> {
                                         "isBooked": true,
                                         "isBookedAccepted": false,
                                         "isBookedDate":
-                                            FieldValue.arrayUnion(array)
+                                            selectedBookingDateController.text,
                                       });
 
                                   await FirebaseFirestore.instance
@@ -252,9 +250,9 @@ class _UkumbiDetailScreenState extends State<UkumbiDetailScreen> {
                                     ScaffoldMessenger.of(context)
                                         .showSnackBar(const SnackBar(
                                       content: Text(
-                                          "Tatizo limetokea imeshindikana kuweka nafasi",
+                                          "Kuna Tatizo limetokea imeshindikana kuweka nafasi",
                                           style: TextStyle(fontSize: 16)),
-                                      duration: Duration(seconds: 3),
+                                      duration: Duration(seconds: 7),
                                     ));
                                   }
                                 }
@@ -262,10 +260,11 @@ class _UkumbiDetailScreenState extends State<UkumbiDetailScreen> {
                                 ScaffoldMessenger.of(context)
                                     .showSnackBar(const SnackBar(
                                   content: Text(
-                                      "Tatizo limetokea imeshindikana kuweka nafasi",
+                                      "Tatizo limetokea imeshindikana kuweka nafasi -",
                                       style: TextStyle(fontSize: 16)),
                                   duration: Duration(seconds: 5),
                                 ));
+                                print(e.toString());
                               }
                             }
                           },

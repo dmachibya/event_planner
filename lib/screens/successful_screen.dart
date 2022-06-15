@@ -97,16 +97,9 @@ class SuccessfulScreen extends StatelessWidget {
                                           children: [
                                             Text("Hali: "),
                                             Container(
-                                              child:
-                                                  items[index].get('isBooked')
-                                                      ? Text(
-                                                          "Booked",
-                                                          style: TextStyle(
-                                                              fontSize: 12),
-                                                        )
-                                                      : Text("Available",
-                                                          style: TextStyle(
-                                                              fontSize: 12)),
+                                              child: Text("Unapatikana",
+                                                  style:
+                                                      TextStyle(fontSize: 12)),
                                               padding: EdgeInsets.symmetric(
                                                   vertical: 4, horizontal: 8),
                                               decoration: BoxDecoration(
@@ -133,7 +126,7 @@ class SuccessfulScreen extends StatelessWidget {
                                         SizedBox(
                                           height: 10,
                                         ),
-                                        Text("Price: "),
+                                        Text("Bei: "),
                                         Container(
                                           child: Text(
                                             "TZS ${items[index].get('price')}",
@@ -184,15 +177,10 @@ class SuccessfulScreen extends StatelessWidget {
                                   SizedBox(height: 10),
                                   Row(
                                     children: [
-                                      Text("Status: "),
+                                      Text("Hali: "),
                                       Container(
-                                        child: items[index].get('isBooked')
-                                            ? Text(
-                                                "Booked",
-                                                style: TextStyle(fontSize: 12),
-                                              )
-                                            : Text("Available",
-                                                style: TextStyle(fontSize: 12)),
+                                        child: Text("Unapatikana",
+                                            style: TextStyle(fontSize: 12)),
                                         padding: EdgeInsets.symmetric(
                                             vertical: 4, horizontal: 8),
                                         decoration: BoxDecoration(
@@ -201,7 +189,7 @@ class SuccessfulScreen extends StatelessWidget {
                                             color: Colors.grey.shade200),
                                       ),
                                       Spacer(),
-                                      Text("Category: "),
+                                      Text("Aina: "),
                                       Container(
                                         child: Text(
                                           items[index].get('category'),
@@ -215,7 +203,19 @@ class SuccessfulScreen extends StatelessWidget {
                                             color: Colors.grey.shade200),
                                       )
                                     ],
-                                  )
+                                  ), SizedBox(height: 10,),
+                                   Text("Bei: "),
+                                  Container(
+                                    child: Text(
+                                      "TZS ${items[index].get('price')}",
+                                      style: TextStyle(fontSize: 12),
+                                    ),
+                                    padding: EdgeInsets.symmetric(
+                                        vertical: 4, horizontal: 8),
+                                    decoration: BoxDecoration(
+                                        borderRadius: BorderRadius.circular(10),
+                                        color: Colors.grey.shade200),
+                                  ),
                                 ]),
                           ),
                         ),
