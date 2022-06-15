@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:event_planner/utils/constants.dart';
+import 'package:go_router/go_router.dart';
 // import 'login_screen.dart';
 // import 'signup_screen.dart';
 
@@ -52,6 +53,7 @@ class LandingScreen extends StatelessWidget {
                 child: Padding(
                   padding: const EdgeInsets.only(top: 60, left: 25),
                   child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
                       Text(
                         'Event Reservation',
@@ -61,7 +63,7 @@ class LandingScreen extends StatelessWidget {
                             color: Colors.white),
                       ),
                       Text(
-                        'Welcome, reserve events locations with easy',
+                        'Karibu, kodi ukumbi kwa urahisi',
                         style: TextStyle(
                             fontSize: 18,
                             fontStyle: FontStyle.italic,
@@ -81,15 +83,14 @@ class LandingScreen extends StatelessWidget {
                       padding:
                           const EdgeInsets.only(top: 25, left: 24, right: 24),
                       child: RaisedButton(
-                        onPressed: () =>
-                            Navigator.of(context).pushNamed(loginRoute),
+                        onPressed: () => GoRouter.of(context).go(loginRoute),
                         elevation: 0,
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(25),
                         ),
                         color: Colors.indigo,
                         child: Text(
-                          'Log In',
+                          'Ingia',
                           style: TextStyle(
                             fontSize: 20,
                             fontWeight: FontWeight.w700,
@@ -109,10 +110,9 @@ class LandingScreen extends StatelessWidget {
                           borderRadius: BorderRadius.circular(25),
                         ),
                         color: Colors.white,
-                        onPressed: () =>
-                            Navigator.of(context).pushNamed(registerRoute),
+                        onPressed: () => GoRouter.of(context).go(registerRoute),
                         child: Text(
-                          'Sign Up',
+                          'Jisajili',
                           style: TextStyle(
                             fontSize: 20,
                             fontWeight: FontWeight.w700,

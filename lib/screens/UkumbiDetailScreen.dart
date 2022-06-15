@@ -1,6 +1,7 @@
 // import 'dart:io';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:event_planner/utils/authentication.dart';
 import 'package:flutter/material.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:dropdown_search/dropdown_search.dart';
@@ -61,8 +62,11 @@ class _UkumbiDetailScreenState extends State<UkumbiDetailScreen> {
     ];
 
     // add images to pageview
-    if (widget.ukumbi!.get('image') != '') {
+    if (widget.ukumbi!.get('image') != 'null') {
       images[0] = widget.ukumbi!.get('image');
+    }
+    if (widget.ukumbi!.get('image2') != 'null') {
+      images.add(widget.ukumbi!.get('image2'));
     }
     // if (widget.item.data().toString().contains('img2') &&
     //     widget.item.get('img2') != '') {
@@ -73,7 +77,7 @@ class _UkumbiDetailScreenState extends State<UkumbiDetailScreen> {
     //   images.add(widget.item.get('img3'));
     // }
 
-    var item_price = "100000";
+    var item_price = widget.ukumbi!.get('price');
 
     var item_name = widget.ukumbi!.get('name');
     // var item_price = widget.item.data().toString().contains('price')
@@ -117,25 +121,6 @@ class _UkumbiDetailScreenState extends State<UkumbiDetailScreen> {
                         // onPageChanged: callbackFunction,
                         scrollDirection: Axis.horizontal,
                       )),
-                  Positioned(
-                      bottom: 20,
-                      right: 20,
-                      child: Container(
-                        padding:
-                            EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-                        decoration: BoxDecoration(
-                            color: Colors.grey.withOpacity(.7),
-                            borderRadius: BorderRadius.circular(32)),
-                        child: Row(
-                          children: [
-                            Icon(Icons.favorite_outline),
-                            SizedBox(
-                              width: 4,
-                            ),
-                            Text("20")
-                          ],
-                        ),
-                      ))
                 ])),
             Container(
                 padding: EdgeInsets.symmetric(
@@ -146,7 +131,7 @@ class _UkumbiDetailScreenState extends State<UkumbiDetailScreen> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      "TZS 100000",
+                      "TZS $item_price",
                       style:
                           TextStyle(fontSize: 28, fontWeight: FontWeight.bold),
                     ),
@@ -162,8 +147,8 @@ class _UkumbiDetailScreenState extends State<UkumbiDetailScreen> {
                       style: TextStyle(color: Colors.grey.shade700),
                       colorClickableText: Colors.pink,
                       trimMode: TrimMode.Line,
-                      trimCollapsedText: 'Show more',
-                      trimExpandedText: 'Show less',
+                      trimCollapsedText: 'Onesha yote',
+                      trimExpandedText: 'Onesha kidogo',
                       moreStyle:
                           TextStyle(fontSize: 14, fontWeight: FontWeight.bold),
                     ),
@@ -182,14 +167,20 @@ class _UkumbiDetailScreenState extends State<UkumbiDetailScreen> {
             //     onPressed: () {}),
             Expanded(
                 child: ElevatedButton(
-                    onPressed: widget.ukumbi.get('isBooked')
+                    style: ElevatedButton.styleFrom(
+                      minimumSize: const Size.fromHeight(50), // NEW
+                      // enabled: isEditable,
+                    ),
+                    onPressed: widget.ukumbi.get('isBookedAccepted') ||
+                            widget.ukumbi.get('user_id') ==
+                                AuthenticationHelper().user.uid
                         ? null
                         : () async {
                             var result = await showDialog<bool>(
                               context: context,
                               builder: (BuildContext context) => AlertDialog(
                                 title: Text(
-                                    'Start Book ' + widget.ukumbi.get('name')),
+                                    'Kodi Sasa - ' + widget.ukumbi.get('name')),
                                 content: TextFormField(
                                     onTap: () => _showSelectDate(context),
                                     keyboardType: TextInputType.none,
@@ -210,45 +201,77 @@ class _UkumbiDetailScreenState extends State<UkumbiDetailScreen> {
                                 ],
                               ),
                             );
-                            try {
-                              if (result != null && result == true) {
-                                bool updated = await _db.update(
-                                    collection: "ukumbi",
-                                    docsId: widget.ukumbi.id,
-                                    data: {
-                                      "isBooked": true,
-                                      "isBookedDate":
-                                          selectedBookingDateController.text
-                                    });
-                                if (updated) {
-                                  ScaffoldMessenger.of(context)
-                                      .showSnackBar(const SnackBar(
-                                    content: Text("Ukumbi booked successully",
-                                        style: TextStyle(fontSize: 16)),
-                                    duration: Duration(seconds: 3),
-                                  ));
-                                } else {
-                                  ScaffoldMessenger.of(context)
-                                      .showSnackBar(const SnackBar(
-                                    content: Text("Could not book successully",
-                                        style: TextStyle(fontSize: 16)),
-                                    duration: Duration(seconds: 3),
-                                  ));
+                            if (widget.ukumbi.get('acceptedUser') != null &&
+                                widget.ukumbi.get('isBookedDate').contains(
+                                    selectedBookingDateController.text)) {
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                SnackBar(
+                                  content: Text(
+                                      "Ukumbi umekwisha kodishwa siku hiyo"),
+                                  duration: Duration(seconds: 10),
+                                ),
+                              );
+                            } else {
+                              try {
+                                if (result != null && result == true) {
+                                  List array =
+                                      widget.ukumbi.get('isBookedDate');
+                                  array.add(selectedBookingDateController.text);
+                                  bool updated = await _db.update(
+                                      collection: "ukumbi",
+                                      docsId: widget.ukumbi.id,
+                                      data: {
+                                        "isBooked": true,
+                                        "isBookedAccepted": false,
+                                        "isBookedDate":
+                                            FieldValue.arrayUnion(array)
+                                      });
+
+                                  await FirebaseFirestore.instance
+                                      .collection("bookings")
+                                      .add({
+                                    "date": selectedBookingDateController.text,
+                                    "user_booked":
+                                        AuthenticationHelper().user.uid,
+                                    "user_owns": widget.ukumbi.get('user_id'),
+                                    "status": 0,
+                                    "ukumbi_id": widget.ukumbi.id,
+                                    "ukumbi_name": widget.ukumbi.get('name'),
+                                    "ukumbi_price": widget.ukumbi.get('price'),
+                                  });
+
+                                  if (updated) {
+                                    ScaffoldMessenger.of(context)
+                                        .showSnackBar(const SnackBar(
+                                      content: Text(
+                                          "Ombi lako la kukodi limetumwa",
+                                          style: TextStyle(fontSize: 16)),
+                                      duration: Duration(seconds: 3),
+                                    ));
+                                  } else {
+                                    ScaffoldMessenger.of(context)
+                                        .showSnackBar(const SnackBar(
+                                      content: Text(
+                                          "Tatizo limetokea imeshindikana kuweka nafasi",
+                                          style: TextStyle(fontSize: 16)),
+                                      duration: Duration(seconds: 3),
+                                    ));
+                                  }
                                 }
+                              } catch (e) {
+                                ScaffoldMessenger.of(context)
+                                    .showSnackBar(const SnackBar(
+                                  content: Text(
+                                      "Tatizo limetokea imeshindikana kuweka nafasi",
+                                      style: TextStyle(fontSize: 16)),
+                                  duration: Duration(seconds: 5),
+                                ));
                               }
-                            } catch (e) {
-                              ScaffoldMessenger.of(context)
-                                  .showSnackBar(const SnackBar(
-                                content: Text(
-                                    "An error occured Could not book successully",
-                                    style: TextStyle(fontSize: 16)),
-                                duration: Duration(seconds: 5),
-                              ));
                             }
                           },
-                    child: Text(widget.ukumbi.get('isBooked')
-                        ? "Occupied"
-                        : "Book now")))
+                    child: Text(widget.ukumbi.get('isBookedAccepted')
+                        ? "Umechukuliwa"
+                        : "Kodi Sasa")))
             // DecoratedBox(
             //     decoration: BoxDecoration(
             //         gradient: LinearGradient(colors: [
@@ -280,110 +303,6 @@ class _UkumbiDetailScreenState extends State<UkumbiDetailScreen> {
     );
   }
 
-  void _addToCartBottomSheet(context, name, image, price) {
-    showModalBottomSheet(
-        context: context,
-        builder: (BuildContext context) {
-          return Container(
-            padding: EdgeInsets.symmetric(vertical: 20, horizontal: 20),
-            child: Form(
-                key: _formKey,
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      "Add to Cart",
-                      textAlign: TextAlign.center,
-                      style: Theme.of(context).textTheme.headline6,
-                    ),
-                    SizedBox(
-                      height: 10,
-                    ),
-                    Row(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Image.network(images[0],
-                              width: 60, height: 60, fit: BoxFit.cover),
-                          SizedBox(width: 10),
-                          Expanded(
-                              child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                Text(name),
-                                Text(
-                                  "TZS $price",
-                                  style: TextStyle(
-                                      fontWeight: FontWeight.bold,
-                                      fontSize: 24),
-                                )
-                              ]))
-                        ]),
-                    SizedBox(
-                      height: 10,
-                    ),
-                    // Text("Quantity"),
-                    Row(children: [
-                      TextButton(
-                          onPressed: () {
-                            setState(() {
-                              quantityController.text =
-                                  (int.parse(quantityController.text) - 1)
-                                      .toString();
-                            });
-                          },
-                          child: Icon(Icons.remove)),
-                      Expanded(
-                        child: TextFormField(
-                            textAlign: TextAlign.center,
-                            keyboardType: TextInputType.number,
-                            controller: quantityController,
-                            validator: (value) => value!.isEmpty
-                                ? 'Please enter quantity '
-                                : null,
-                            decoration: InputDecoration(
-                              border: OutlineInputBorder(),
-                            )),
-                      ),
-                      TextButton(
-                          onPressed: () {
-                            setState(() {
-                              quantityController.text =
-                                  (int.parse(quantityController.text) + 1)
-                                      .toString();
-                            });
-                          },
-                          child: Icon(Icons.add)),
-                    ]),
-                    Spacer(),
-                    ElevatedButton(
-                        onPressed: () {
-                          Navigator.pop(context);
-
-                          // Cart()
-                          //     .addItem(
-                          //   widget.id,
-                          //   name,
-                          //   image,
-                          //   quantityController.text,
-                          //   price,
-                          // )
-                          //     .then((value) {
-                          //   ScaffoldMessenger.of(context).showSnackBar(
-                          //       SnackBar(content: Text("Added to cart")));
-                          // });
-                        },
-                        style: ElevatedButton.styleFrom(
-                          minimumSize: const Size.fromHeight(50), // NEW
-                          // enabled: isEditable,
-                        ),
-                        child: Text("Add to Cart"))
-                  ],
-                )),
-          );
-        });
-  }
-
   Future<void> _showSelectDate(BuildContext context) async {
     var dateSelect = await showDatePicker(
         context: context,
@@ -391,7 +310,7 @@ class _UkumbiDetailScreenState extends State<UkumbiDetailScreen> {
         firstDate: DateTime(2020, 1),
         lastDate: DateTime(2040));
     if (dateSelect != null) {
-      DateFormat dateFormat = DateFormat("yyyy-mm-dd");
+      DateFormat dateFormat = DateFormat("dd/MM/yyyy");
       final selctedFormatedDate = dateFormat.format(dateSelect);
       setState(() {
         selectedBookingDateController.text = selctedFormatedDate;

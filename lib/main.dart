@@ -6,18 +6,20 @@ import 'package:event_planner/utils/constants.dart';
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
-  runApp(const MyApp());
+  runApp(MyApp());
 }
 
 class MyApp extends StatelessWidget {
-  const MyApp({Key? key}) : super(key: key);
+  MyApp({Key? key}) : super(key: key);
+
+  AppRouter _router = AppRouter();
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
+    return MaterialApp.router(
         theme: ThemeData(primaryColor: Colors.blue),
-        initialRoute: landingRoute,
-        onGenerateRoute: AppRoute.generateRoute,
+        routeInformationParser: _router.router.routeInformationParser,
+        routerDelegate: _router.router.routerDelegate,
         debugShowCheckedModeBanner: false);
   }
 }

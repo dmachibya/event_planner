@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:event_planner/components/CustomeDrawer.dart';
 import 'package:event_planner/models/Ukumbi.dart';
 import 'package:event_planner/screens/successful_screen.dart';
@@ -8,6 +9,8 @@ import 'package:flutter/material.dart';
 import 'package:dropdown_search/dropdown_search.dart';
 import 'dart:io';
 
+import 'package:go_router/go_router.dart';
+
 class UkumbiRegisterScreen extends StatefulWidget {
   UkumbiRegisterScreen({Key? key}) : super(key: key);
   @override
@@ -17,23 +20,33 @@ class UkumbiRegisterScreen extends StatefulWidget {
 class _UkumbiRegisterScreenState extends State<UkumbiRegisterScreen> {
   DB _db = new DB();
   File? _photo;
+
   bool _imageStartSelection = false;
   File? _photo2;
+
   bool _imageStartSelection2 = false;
   final _formKey = GlobalKey<FormState>();
   bool categoryError = false;
+
+  bool isImg1 = false;
+  bool isImg2 = false;
+
+  bool isClicked = false; // for disabling submit button
+
   final userId = AuthenticationHelper().user.uid;
   TextEditingController locationController = TextEditingController();
   TextEditingController aboutController = TextEditingController();
   TextEditingController categoryController = TextEditingController();
   TextEditingController nameController = TextEditingController();
+  TextEditingController priceController = TextEditingController();
   TextEditingController imageController = TextEditingController();
   final ukumbiRegisterFormKey = GlobalKey<FormState>();
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(),
-      drawer: const CustomHomeDrawer(),
+      appBar: AppBar(
+        title: Text("Sajili Ukumbi"),
+      ),
       body: Container(
         child: Form(
           key: ukumbiRegisterFormKey,
@@ -41,27 +54,17 @@ class _UkumbiRegisterScreenState extends State<UkumbiRegisterScreen> {
             child: Form(
               key: _formKey,
               child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  SizedBox(
-                    height: 5,
-                  ),
-                  Text(
-                    "Register Ukumbi",
-                    style: Theme.of(context)
-                        .textTheme
-                        .headline4!
-                        .copyWith(color: Colors.black),
-                  ),
                   Container(
-                    margin: EdgeInsets.all(8),
-                    padding: EdgeInsets.all(8),
+                    padding: EdgeInsets.all(16),
                     child: TextFormField(
                       controller: nameController,
                       validator: (value) => value == null || value.isEmpty
-                          ? 'Ukumbi Name is required'
+                          ? 'Jina la ukumbi linatakiwa'
                           : null,
                       decoration: const InputDecoration(
-                        label: Text("Ukumbi Name"),
+                        label: Text("Jina la Ukumbi"),
                         hoverColor: Colors.black26,
                         hintStyle: TextStyle(
                             fontSize: 18,
@@ -69,12 +72,6 @@ class _UkumbiRegisterScreenState extends State<UkumbiRegisterScreen> {
                             fontStyle: FontStyle.italic),
                       ),
                     ),
-                  ),
-                  SizedBox(
-                    height: 10,
-                  ),
-                  SizedBox(
-                    height: 10,
                   ),
                   Container(
                     margin: EdgeInsets.all(8),
@@ -87,7 +84,7 @@ class _UkumbiRegisterScreenState extends State<UkumbiRegisterScreen> {
                           showSelectedItems: true,
                           items: Ukumbi.categories,
                           dropdownSearchDecoration: InputDecoration(
-                            label: Text("Category"),
+                            label: Text("Aina ya Ukumbi"),
                           ),
                           // popupItemDisabled: (String s) => s.startsWith('I'),
                           onChanged: (data) {
@@ -97,7 +94,9 @@ class _UkumbiRegisterScreenState extends State<UkumbiRegisterScreen> {
                           },
                           selectedItem: Ukumbi.categories[0],
                         ),
-                        categoryError ? Text("Category is required") : Text(''),
+                        categoryError
+                            ? Text("Aina ya ukumbi inatakiwa")
+                            : Text(''),
                       ],
                     ),
                   ),
@@ -106,101 +105,186 @@ class _UkumbiRegisterScreenState extends State<UkumbiRegisterScreen> {
                       margin: EdgeInsets.all(8),
                       child: TextFormField(
                         controller: aboutController,
-                        decoration: InputDecoration(label: Text("About")),
+                        maxLines: 2,
+                        decoration:
+                            InputDecoration(label: Text("Kuhusu Ukumbi")),
                       )),
                   Container(
                       padding: EdgeInsets.all(8),
                       margin: EdgeInsets.all(8),
                       child: TextFormField(
                         controller: locationController,
-                        decoration: InputDecoration(label: Text("Location")),
+                        decoration: InputDecoration(label: Text("Mahali")),
                       )),
                   Container(
-                      padding: EdgeInsets.all(8),
-                      margin: EdgeInsets.all(8),
-                      child: TextFormField(
-                        onChanged: (v) {
-                          if (_imageStartSelection) {}
-                        },
-                        onTap: () async {
-                          _imageStartSelection = true;
-                          _photo = await _db.imgFromGallery();
-                        },
-                        keyboardType: TextInputType.none,
-                        decoration: InputDecoration(label: Text("Image")),
-                      )),
-                  _imageStartSelection
-                      ? Container(
-                          child: Text("Image Selected"),
-                        )
-                      : Container(),
-                  Container(
-                      padding: EdgeInsets.all(8),
-                      margin: EdgeInsets.all(8),
-                      child: TextFormField(
-                        onChanged: (v) {
-                          if (_imageStartSelection2) {}
-                        },
-                        onTap: () async {
-                          _imageStartSelection2 = true;
-                          _photo2 = await _db.imgFromGallery();
-                        },
-                        keyboardType: TextInputType.none,
-                        decoration: InputDecoration(label: Text("Image")),
-                      )),
-                  _imageStartSelection2
-                      ? Container(
-                          child: Text("Image Selected"),
-                        )
-                      : Container(),
+                    padding: EdgeInsets.all(16),
+                    child: TextFormField(
+                      controller: priceController,
+                      // keyboardType: KeyboardTy,
+                      validator: (value) {
+                        if (value == null || value.isEmpty) {
+                          return 'Gharama inatakiwa';
+                        }
+                        int val = int.tryParse(value) ?? 0;
+
+                        if (val == 0) {
+                          return "Tafadhali jaza gharama sahihi";
+                        }
+
+                        return null;
+                      },
+                      decoration: const InputDecoration(
+                        label: Text("Gharama ya kukodisha"),
+                        hoverColor: Colors.black26,
+                        hintStyle: TextStyle(
+                            fontSize: 18,
+                            color: Colors.white70,
+                            fontStyle: FontStyle.italic),
+                      ),
+                    ),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.only(left: 16.0, top: 10),
+                    child: Text("Picha za Ukumbi",
+                        style: Theme.of(context).textTheme.headline6),
+                  ),
+                  Row(children: [
+                    Container(
+                        padding: EdgeInsets.all(8),
+                        margin: EdgeInsets.all(8),
+                        child: InkWell(
+                          onTap: () async {
+                            _imageStartSelection = true;
+                            await _db.imgFromGallery().then((value) {
+                              if (value != null) {
+                                setState(() {
+                                  isImg1 = true;
+                                  _photo = value;
+                                });
+                              }
+                            });
+                          },
+                          child: Container(
+                            margin: EdgeInsets.only(right: 12),
+                            width: 80,
+                            height: 80,
+                            decoration:
+                                BoxDecoration(color: Colors.grey.shade300),
+                            child: isImg1
+                                ? Image.file(
+                                    _photo!,
+                                    width: 80,
+                                    height: 80,
+                                    fit: BoxFit.cover,
+                                  )
+                                : Icon(
+                                    Icons.photo_camera,
+                                  ),
+                          ),
+                        )),
+                    Container(
+                        padding: EdgeInsets.all(8),
+                        margin: EdgeInsets.all(8),
+                        child: InkWell(
+                          onTap: () async {
+                            _imageStartSelection2 = true;
+                            await _db.imgFromGallery().then((value) {
+                              if (value != null) {
+                                setState(() {
+                                  isImg2 = true;
+                                  _photo2 = value;
+                                });
+                              }
+                            });
+                          },
+                          child: Container(
+                            margin: EdgeInsets.only(right: 12),
+                            width: 80,
+                            height: 80,
+                            decoration:
+                                BoxDecoration(color: Colors.grey.shade300),
+                            child: isImg2
+                                ? Image.file(
+                                    _photo2!,
+                                    width: 80,
+                                    height: 80,
+                                    fit: BoxFit.cover,
+                                  )
+                                : Icon(
+                                    Icons.photo_camera,
+                                  ),
+                          ),
+                        )),
+                  ]),
                   Container(
                     padding: EdgeInsets.all(8),
                     margin: EdgeInsets.all(8),
                     child: Center(
                       child: ElevatedButton(
+                        style: ElevatedButton.styleFrom(
+                          minimumSize: const Size.fromHeight(50), // NEW
+                          // enabled: isEditable,
+                        ),
                         child: Text("Register"),
-                        onPressed: () async {
-                          if (_formKey.currentState!.validate()) {
-                            if (categoryController.text == '' ||
-                                categoryController.text == null) {
-                              var imagePath = await _db.uploadFile(
-                                  photo: _photo,
-                                  userId: DateTime.now()
-                                          .millisecondsSinceEpoch
-                                          .toString() +
-                                      userId);
-                              var image2Path = await _db.uploadFile(
-                                  photo: _photo,
-                                  userId: DateTime.now()
-                                          .millisecondsSinceEpoch
-                                          .toString() +
-                                      userId);
-                              _db.createRandomId(
-                                collection: "ukumbi",
-                                data: {
-                                  "category":
-                                      categoryController.text.length <= 0
-                                          ? "Sherehe"
-                                          : categoryController.text,
-                                  "about": aboutController.text,
-                                  "location": locationController.text,
-                                  "name": nameController.text,
-                                  "isBooked": false,
-                                  "isBookedDate": null,
-                                  "image": imagePath,
-                                  "image2": image2Path,
-                                  "user_id": AuthenticationHelper().user.uid,
-                                },
-                              ).then((value) => {
-                                    Navigator.push(
-                                        context,
-                                        MaterialPageRoute(
-                                            builder: (context) =>
-                                                SuccessfulScreen()))
+                        onPressed: !isClicked
+                            ? () async {
+                                if (_formKey.currentState!.validate()) {
+                                  setState(() {
+                                    isClicked = true;
                                   });
-                            }
-                          }
-                        },
+                                  if (categoryController.text == '' ||
+                                      categoryController.text == null) {
+                                    var imagePath = await _db.uploadFile(
+                                        photo: _photo,
+                                        userId: DateTime.now()
+                                                .millisecondsSinceEpoch
+                                                .toString() +
+                                            userId);
+                                    var image2Path = await _db.uploadFile(
+                                        photo: _photo,
+                                        userId: DateTime.now()
+                                                .millisecondsSinceEpoch
+                                                .toString() +
+                                            userId);
+                                    // var array = ["null"];
+                                    FirebaseFirestore.instance
+                                        .collection("ukumbi")
+                                        .add({
+                                      "category":
+                                          categoryController.text.length <= 0
+                                              ? "Sherehe"
+                                              : categoryController.text,
+                                      "about": aboutController.text,
+                                      "location": locationController.text,
+                                      "name": nameController.text,
+                                      "price": priceController.text,
+                                      "bookValue": 0,
+                                      "isBooked": false,
+                                      "isBookedAccepted": false,
+                                      "isBookedDate": null,
+                                      "acceptedUser": null,
+                                      "image": imagePath,
+                                      "image2": image2Path,
+                                      "user_id":
+                                          AuthenticationHelper().user.uid,
+                                    }).then((value) {
+                                      GoRouter.of(context).go("/home");
+                                      setState(() {
+                                        isClicked = false;
+                                      });
+                                    }).onError((error, stackTrace) {
+                                      setState(() {
+                                        isClicked = false;
+                                      });
+                                      ScaffoldMessenger.of(context)
+                                          .showSnackBar(SnackBar(
+                                              content: Text(
+                                                  "Tatizo limejitokeza, jaribu tena")));
+                                    });
+                                  }
+                                }
+                              }
+                            : null,
                       ),
                     ),
                   ),

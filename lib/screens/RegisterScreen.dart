@@ -1,17 +1,27 @@
 import 'package:flutter/material.dart';
 import 'package:event_planner/utils/authentication.dart';
 import 'package:event_planner/utils/constants.dart';
+import 'package:go_router/go_router.dart';
 // import 'package:provider/provider.dart';
 // import '../Models/auth.dart';
 import 'successful_screen.dart';
 
-class RegisterScreen extends StatelessWidget {
+class RegisterScreen extends StatefulWidget {
+  RegisterScreen({Key? key}) : super(key: key);
+
+  @override
+  State<RegisterScreen> createState() => _RegisterScreenState();
+}
+
+class _RegisterScreenState extends State<RegisterScreen> {
   static const routeName = '/signup-screen';
 
   final nameController = TextEditingController();
   final phoneController = TextEditingController();
   final emailController = TextEditingController();
   final passwordController = TextEditingController();
+
+  bool isButtonPressed = false;
 
   Widget signUpWith(IconData icon) {
     return Container(
@@ -108,31 +118,47 @@ class RegisterScreen extends StatelessWidget {
                           shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(25)),
                           color: Colors.indigo.shade800,
-                          onPressed: () {
-                            AuthenticationHelper()
-                                .signUp(
-                                    phone: phoneController.text,
-                                    role: 'normal',
-                                    name: nameController.text,
-                                    email: emailController.text,
-                                    password: passwordController.text)
-                                .then((value) => {
-                                      if (value == null)
-                                        {
-                                          Navigator.pushNamed(
-                                              context, homeRoute)
-                                        }
-                                      else
-                                        {
-                                          ScaffoldMessenger.of(context)
-                                              .showSnackBar(SnackBar(
-                                            content: Text(value,
-                                                style: TextStyle(fontSize: 16)),
-                                            duration: Duration(seconds: 5),
-                                          )),
-                                        }
+                          onPressed: !isButtonPressed
+                              ? () {
+                                  setState(() {
+                                    isButtonPressed = true;
+                                  });
+                                  AuthenticationHelper()
+                                      .signUp(
+                                          phone: phoneController.text,
+                                          role: 'normal',
+                                          name: nameController.text,
+                                          email: emailController.text,
+                                          password: passwordController.text)
+                                      .then((value) {
+                                    setState(() {
+                                      isButtonPressed = true;
                                     });
-                          },
+                                    if (value == null) {
+                                      GoRouter.of(context).go(homeRoute);
+                                    } else {
+                                      setState(() {
+                                        isButtonPressed = false;
+                                      });
+                                      ScaffoldMessenger.of(context)
+                                          .showSnackBar(SnackBar(
+                                        content: Text(value,
+                                            style: TextStyle(fontSize: 16)),
+                                        duration: Duration(seconds: 5),
+                                      ));
+                                    }
+                                  }).onError((error, stackTrace) {
+                                    ScaffoldMessenger.of(context).showSnackBar(
+                                        SnackBar(
+                                            content: Text("There was an error",
+                                                style: TextStyle(fontSize: 16)),
+                                            duration: Duration(seconds: 5)));
+                                    setState(() {
+                                      isButtonPressed = false;
+                                    });
+                                  });
+                                }
+                              : null,
                           child: Text(
                             'Register',
                             style: TextStyle(
@@ -146,7 +172,7 @@ class RegisterScreen extends StatelessWidget {
                       SizedBox(height: 20),
                       InkWell(
                         onTap: () {
-                          Navigator.pushNamed(context, loginRoute);
+                          GoRouter.of(context).go(loginRoute);
                         },
                         child: Center(
                           child: Text.rich(

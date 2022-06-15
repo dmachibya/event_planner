@@ -1,13 +1,23 @@
 import 'package:flutter/material.dart';
 import 'package:event_planner/utils/authentication.dart';
 import 'package:event_planner/utils/constants.dart';
+import 'package:go_router/go_router.dart';
 import 'successful_screen.dart';
 
-class LoginScreen extends StatelessWidget {
+class LoginScreen extends StatefulWidget {
+  LoginScreen({Key? key}) : super(key: key);
+
+  @override
+  State<LoginScreen> createState() => _LoginScreenState();
+}
+
+class _LoginScreenState extends State<LoginScreen> {
   static const routeName = '/login-screen';
 
   final emailController = TextEditingController();
   final passwordController = TextEditingController();
+
+  bool isButtonPressed = false;
 
   Widget login(IconData icon) {
     return Container(
@@ -102,27 +112,43 @@ class LoginScreen extends StatelessWidget {
                           shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(25)),
                           color: Colors.indigo.shade800,
-                          onPressed: () {
-                            AuthenticationHelper()
-                                .signIn(
-                                    email: emailController.text,
-                                    password: passwordController.text)
-                                .then((value) => {
-                                      if (value == null)
-                                        {
-                                          Navigator.pushNamed(
-                                              context, homeRoute)
-                                        }
-                                      else
-                                        {
-                                          ScaffoldMessenger.of(context)
-                                              .showSnackBar(SnackBar(
-                                            content: Text(value,style: TextStyle(fontSize: 16)),
-                                            duration: Duration(seconds: 5),
-                                          )),
-                                        }
+                          onPressed: !isButtonPressed
+                              ? () {
+                                  setState(() {
+                                    isButtonPressed = true;
+                                  });
+                                  AuthenticationHelper()
+                                      .signIn(
+                                          email: emailController.text,
+                                          password: passwordController.text)
+                                      .then((value) {
+                                    setState(() {
+                                      isButtonPressed = false;
                                     });
-                          },
+                                    if (value == null) {
+                                      GoRouter.of(context).go(homeRoute);
+                                    } else {
+                                      ScaffoldMessenger.of(context)
+                                          .showSnackBar(SnackBar(
+                                        content: Text(value,
+                                            style: TextStyle(fontSize: 16)),
+                                        duration: Duration(seconds: 5),
+                                      ));
+                                    }
+                                  }).onError((error, stackTrace) {
+                                    ScaffoldMessenger.of(context)
+                                        .showSnackBar(SnackBar(
+                                      content: Text(
+                                          "Tatizo limejitokeza, jaribu tena",
+                                          style: TextStyle(fontSize: 16)),
+                                      duration: Duration(seconds: 5),
+                                    ));
+                                    setState(() {
+                                      isButtonPressed = false;
+                                    });
+                                  });
+                                }
+                              : null,
                           child: Text(
                             'Login',
                             style: TextStyle(
@@ -140,7 +166,7 @@ class LoginScreen extends StatelessWidget {
                       SizedBox(height: 20),
                       InkWell(
                         onTap: () {
-                          Navigator.pushNamed(context, registerRoute);
+                          GoRouter.of(context).go(registerRoute);
                         },
                         child: Center(
                           child: Text.rich(

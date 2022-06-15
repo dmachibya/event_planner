@@ -13,7 +13,7 @@ class BannerCarousel extends StatefulWidget {
 class _BannerCarouselState extends State<BannerCarousel> {
   int pageIndex = 0;
 
-  List<String> items = ["Book at a easy", "Available for your events"];
+  List<String> items = ["Kodi kwa urahisi", "Kumbi zipo kwa tukio lako"];
 
   @override
   Widget build(BuildContext context) {
@@ -42,8 +42,7 @@ class _BannerCarouselState extends State<BannerCarousel> {
               ),
               child: Padding(
                 padding: EdgeInsets.only(
-                  left: bannerWidth * (44 / 380) +
-                      (screenWidth > screenHeight ? 40 : 0),
+                  left: 20,
                   bottom: screenWidth > screenHeight
                       ? 40
                       : bannerHeight * (78 / 283),
