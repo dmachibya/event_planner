@@ -106,7 +106,7 @@ class _KumbiUlizoKodiDetailScreenState
                         Text("Namba ya simu"),
                         Spacer(),
                         Text(
-                          item!.get('phone'),
+                          item.get('phone'),
                           style: Theme.of(context).textTheme.headline6,
                         )
                       ],
@@ -119,7 +119,7 @@ class _KumbiUlizoKodiDetailScreenState
                         Text("Barua Pepe"),
                         Spacer(),
                         Text(
-                          item!.get('email'),
+                          item.get('email'),
                           style: Theme.of(context).textTheme.headline6,
                         )
                       ],

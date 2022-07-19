@@ -232,8 +232,6 @@ class _UkumbiRegisterScreenState extends State<UkumbiRegisterScreen> {
                                   setState(() {
                                     isClicked = true;
                                   });
-                                  if (categoryController.text == '' ||
-                                      categoryController.text == null) {
                                     var imagePath = await _db.uploadFile(
                                         photo: _photo,
                                         userId: DateTime.now()
@@ -283,7 +281,6 @@ class _UkumbiRegisterScreenState extends State<UkumbiRegisterScreen> {
                                     });
                                   }
                                 }
-                              }
                             : null,
                       ),
                     ),
