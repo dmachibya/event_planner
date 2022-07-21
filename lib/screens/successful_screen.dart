@@ -41,7 +41,7 @@ class SuccessfulScreen extends StatelessWidget {
                 if (snapshot.connectionState == ConnectionState.waiting) {
                   return const Padding(
                     padding: EdgeInsets.all(28.0),
-                    child: Text("Inapakua..."),
+                    child: Text("Loading..."),
                   );
                 }
 

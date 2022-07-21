@@ -87,8 +87,22 @@ class _RegisterScreenState extends State<RegisterScreen> {
               userInput(nameController, 'Name', TextInputType.text),
               userInput(phoneController, 'Phone', TextInputType.text),
               userInput(emailController, 'Email', TextInputType.emailAddress),
-              userInput(passwordController, 'Password',
-                  TextInputType.visiblePassword),
+              TextField(
+                controller: passwordController,
+                autocorrect: false,
+                obscureText: true,
+                enableSuggestions: false,
+                autofocus: false,
+                decoration: InputDecoration(
+                  label: Text("Password"),
+                  border: OutlineInputBorder(),
+                  hintStyle: TextStyle(
+                      fontSize: 18,
+                      color: Colors.white70,
+                      fontStyle: FontStyle.italic),
+                ),
+                keyboardType: TextInputType.visiblePassword,
+              ),
               Container(
                 height: 55,
                 // for an exact replicate, remove the padding.

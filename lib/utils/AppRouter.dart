@@ -1,9 +1,9 @@
 import 'package:event_planner/models/Ukumbi.dart';
 import 'package:event_planner/screens/UkumbiListView.dart';
 import 'package:event_planner/screens/UkumbiRegisterScreen.dart';
-import 'package:event_planner/screens/kumbi_ulizokodi.dart';
+import 'package:event_planner/screens/client_requests.dart';
 import 'package:event_planner/screens/kumbi_zako_screen.dart';
-import 'package:event_planner/screens/maombi_kukodi.dart';
+import 'package:event_planner/screens/admin_requests.dart';
 import 'package:flutter/material.dart';
 import 'package:event_planner/screens/LoginScreen.dart';
 import 'package:event_planner/screens/RegisterScreen.dart';

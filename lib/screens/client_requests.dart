@@ -1,6 +1,6 @@
 import 'package:event_planner/screens/UkumbiDetailScreen.dart';
 import 'package:event_planner/screens/UkumbiRegisterScreen.dart';
-import 'package:event_planner/screens/maombi_detail_screen.dart';
+import 'package:event_planner/screens/kumbi_ulizokodi_details.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:go_router/go_router.dart';
@@ -9,14 +9,14 @@ import 'package:app_popup_menu/app_popup_menu.dart';
 
 import '../utils/authentication.dart';
 
-class MaombiKukodiScreen extends StatefulWidget {
-  MaombiKukodiScreen({Key? key}) : super(key: key);
+class KumbiUlizoKodiScreen extends StatefulWidget {
+  KumbiUlizoKodiScreen({Key? key}) : super(key: key);
 
   @override
-  State<MaombiKukodiScreen> createState() => _MaombiKukodiScreenState();
+  State<KumbiUlizoKodiScreen> createState() => _KumbiUlizoKodiScreenState();
 }
 
-class _MaombiKukodiScreenState extends State<MaombiKukodiScreen> {
+class _KumbiUlizoKodiScreenState extends State<KumbiUlizoKodiScreen> {
   // final db = FirebaseFire
   final db = FirebaseFirestore.instance;
 
@@ -37,7 +37,7 @@ class _MaombiKukodiScreenState extends State<MaombiKukodiScreen> {
     var height = MediaQuery.of(context).size.height;
 
     return Scaffold(
-        appBar: AppBar(title: Text("Maombi ya Kukodi")),
+        appBar: AppBar(title: Text("Accessories you requested")),
         body: Container(
           padding:
               EdgeInsets.symmetric(vertical: 20, horizontal: 0.068 * width),
@@ -47,8 +47,8 @@ class _MaombiKukodiScreenState extends State<MaombiKukodiScreen> {
               Expanded(
                 child: StreamBuilder<QuerySnapshot>(
                     stream: db
-                        .collection("bookings")
-                        .where("user_owns",
+                        .collection("rentings")
+                        .where("user_booked",
                             isEqualTo: AuthenticationHelper().user.uid)
                         .snapshots(),
                     builder: (context, AsyncSnapshot<QuerySnapshot> snapshot) {
@@ -62,7 +62,7 @@ class _MaombiKukodiScreenState extends State<MaombiKukodiScreen> {
                         return Text("There was an error");
                       }
                       if (snapshot.data!.docs.length < 1) {
-                        return Text("No data");
+                        return Text("No data found");
                       }
                       return ListView.builder(
                           itemCount: snapshot.data!.docs.length,
@@ -74,13 +74,13 @@ class _MaombiKukodiScreenState extends State<MaombiKukodiScreen> {
                                       context,
                                       MaterialPageRoute(
                                           builder: (context) =>
-                                              MaombiDetailScreen(
+                                              KumbiUlizoKodiDetailScreen(
                                                   ukumbi: item)));
                                 },
                                 child: Card(
                                   child: Container(
                                     padding: EdgeInsets.symmetric(
-                                        vertical: 6, horizontal: 12),
+                                        vertical: 10, horizontal: 12),
                                     child: Column(
                                       crossAxisAlignment:
                                           CrossAxisAlignment.start,
@@ -99,61 +99,59 @@ class _MaombiKukodiScreenState extends State<MaombiKukodiScreen> {
                                             width: 4,
                                           ),
                                           Container(
-                                            child: Text(
-                                              item.get('status') == 1
-                                                  ? 'umekubali'
-                                                  : item.get('status') == 0
-                                                      ? 'hujachukua hatua'
-                                                      : 'umekataa',
-                                              style: TextStyle(fontSize: 12),
-                                            ),
-                                            padding: EdgeInsets.symmetric(
-                                                vertical: 4, horizontal: 8),
-                                            decoration: BoxDecoration(
-                                                borderRadius:
-                                                    BorderRadius.circular(10),
-                                                color: item.get('status') == 1
-                                                    ? Colors.green.shade200
-                                                    : item.get('status') == -1
-                                                        ? Colors.red.shade200
-                                                        : Colors.grey),
-                                          ),
+                                              padding: EdgeInsets.symmetric(
+                                                  vertical: 4, horizontal: 8),
+                                              decoration: BoxDecoration(
+                                                  borderRadius:
+                                                      BorderRadius.circular(10),
+                                                  color: item.get('status') == 1
+                                                      ? Colors.green.shade200
+                                                      : item.get('status') == -1
+                                                          ? Colors.red.shade200
+                                                          : Colors.grey),
+                                              child: Text(
+                                                item.get('status') == 1
+                                                    ? 'Accepted'
+                                                    : item.get('status') == 0
+                                                        ? 'pending'
+                                                        : 'umekataliwa',
+                                                style: TextStyle(fontSize: 12),
+                                              )),
                                           Spacer(),
-                                          AppPopupMenu(
-                                            menuItems: const [
-                                              PopupMenuItem(
-                                                value: 2,
-                                                child: Text('View'),
-                                              ),
-                                              PopupMenuItem(
-                                                value: 3,
-                                                child: Text('Delete'),
-                                              ),
-                                            ],
-                                            // initialValue: 2,
-                                            onSelected: (int value) {
-                                              // print("selected");
-                                              // print(item.id);
-                                              if (value == 2) {
-                                                // Navigator
-                                                Navigator.push(
-                                                    context,
-                                                    MaterialPageRoute(
-                                                        builder: (context) =>
-                                                            MaombiDetailScreen(
-                                                                ukumbi: item)));
-                                              } else if (value == 3) {
-                                                // print("here inside");
-                                                db
-                                                    .collection("ukumbi")
-                                                    .doc(item.id)
-                                                    .delete();
-                                              }
-                                            },
-                                            icon:
-                                                Icon(Icons.more_vert_outlined),
-                                          )
+                                          Icon(Icons.chevron_right, size: 28)
+                                          // AppPopupMenu(
+                                          //   menuItems: const [
+                                          //     PopupMenuItem(
+                                          //       value: 2,
+                                          //       child: Text('View'),
+                                          //     ),
+                                          //     PopupMenuItem(
+                                          //       value: 3,
+                                          //       child: Text('Delete'),
+                                          //     ),
+                                          //   ],
+                                          //   // initialValue: 2,
+                                          //   onSelected: (int value) {
+                                          //     // print("selected");
+                                          //     // print(item.id);
+                                          //     if (value == 2) {
+                                          //       // Navigator
+                                          //     } else if (value == 3) {
+                                          //       // print("here inside");
+                                          //       db
+                                          //           .collection("ukumbi")
+                                          //           .doc(item.id)
+                                          //           .delete();
+                                          //     }
+                                          //   },
+                                          //   icon:
+                                          //       Icon(Icons.more_vert_outlined),
+                                          // )
                                         ]),
+                                        Text(
+                                          item.get('date'),
+                                          style: TextStyle(fontSize: 12),
+                                        )
                                       ],
                                     ),
                                   ),

@@ -180,7 +180,7 @@ class _UkumbiDetailScreenState extends State<UkumbiDetailScreen> {
                               context: context,
                               builder: (BuildContext context) => AlertDialog(
                                 title: Text(
-                                    'Kodi Sasa - ' + widget.ukumbi.get('name')),
+                                    'Rent now - ' + widget.ukumbi.get('name')),
                                 content: TextFormField(
                                     onTap: () => _showSelectDate(context),
                                     keyboardType: TextInputType.none,
@@ -205,7 +205,7 @@ class _UkumbiDetailScreenState extends State<UkumbiDetailScreen> {
                               ScaffoldMessenger.of(context).showSnackBar(
                                 SnackBar(
                                   content: Text(
-                                      "Ukumbi umekwisha kodishwa siku hiyo"),
+                                      "Someone had already rent on that day"),
                                   duration: Duration(seconds: 10),
                                 ),
                               );
@@ -216,7 +216,7 @@ class _UkumbiDetailScreenState extends State<UkumbiDetailScreen> {
                                   //     widget.ukumbi.get('isBookedDate');
                                   // array.add(selectedBookingDateController.text);
                                   bool updated = await _db.update(
-                                      collection: "ukumbi",
+                                      collection: "accessories",
                                       docsId: widget.ukumbi.id,
                                       data: {
                                         "isBooked": true,
@@ -226,7 +226,7 @@ class _UkumbiDetailScreenState extends State<UkumbiDetailScreen> {
                                       });
 
                                   await FirebaseFirestore.instance
-                                      .collection("bookings")
+                                      .collection("rentings")
                                       .add({
                                     "date": selectedBookingDateController.text,
                                     "user_booked":
@@ -241,8 +241,8 @@ class _UkumbiDetailScreenState extends State<UkumbiDetailScreen> {
                                   if (updated) {
                                     ScaffoldMessenger.of(context)
                                         .showSnackBar(const SnackBar(
-                                      content: Text(
-                                          "Ombi lako la kukodi limetumwa",
+                                      backgroundColor: Colors.green,
+                                      content: Text("Request successfully sent",
                                           style: TextStyle(fontSize: 16)),
                                       duration: Duration(seconds: 3),
                                     ));
@@ -250,7 +250,7 @@ class _UkumbiDetailScreenState extends State<UkumbiDetailScreen> {
                                     ScaffoldMessenger.of(context)
                                         .showSnackBar(const SnackBar(
                                       content: Text(
-                                          "Kuna Tatizo limetokea imeshindikana kuweka nafasi",
+                                          "There was a problem, renting failed",
                                           style: TextStyle(fontSize: 16)),
                                       duration: Duration(seconds: 7),
                                     ));
@@ -260,7 +260,7 @@ class _UkumbiDetailScreenState extends State<UkumbiDetailScreen> {
                                 ScaffoldMessenger.of(context)
                                     .showSnackBar(const SnackBar(
                                   content: Text(
-                                      "Tatizo limetokea imeshindikana kuweka nafasi -",
+                                      "There was a problem, renting failed",
                                       style: TextStyle(fontSize: 16)),
                                   duration: Duration(seconds: 5),
                                 ));
@@ -269,7 +269,7 @@ class _UkumbiDetailScreenState extends State<UkumbiDetailScreen> {
                             }
                           },
                     child: Text(widget.ukumbi.get('isBookedAccepted')
-                        ? "Umechukuliwa"
+                        ? "Rented"
                         : "Rent now")))
             // DecoratedBox(
             //     decoration: BoxDecoration(

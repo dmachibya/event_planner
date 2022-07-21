@@ -80,8 +80,22 @@ class _LoginScreenState extends State<LoginScreen> {
                 SizedBox(height: 45),
                 userInput(emailController, 'Email', TextInputType.emailAddress),
                 SizedBox(height: 20),
-                userInput(passwordController, 'Password',
-                    TextInputType.visiblePassword),
+                TextField(
+                  controller: passwordController,
+                  obscureText: true,
+                  autocorrect: false,
+                  enableSuggestions: false,
+                  autofocus: false,
+                  decoration: InputDecoration(
+                    label: Text("Password"),
+                    border: OutlineInputBorder(),
+                    hintStyle: TextStyle(
+                        fontSize: 18,
+                        color: Colors.white70,
+                        fontStyle: FontStyle.italic),
+                  ),
+                  keyboardType: TextInputType.visiblePassword,
+                ),
                 SizedBox(height: 20),
                 ElevatedButton(
                   style: ElevatedButton.styleFrom(

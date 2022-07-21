@@ -4,7 +4,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 class AuthenticationHelper {
   final FirebaseAuth _auth = FirebaseAuth.instance;
   get user => _auth.currentUser;
-  get isAdmin => _auth.currentUser!.email == "admin@machinga.com";
+  get isAdmin => _auth.currentUser!.email == "admin@weddingapp.com";
 
   get test => "Auth";
 

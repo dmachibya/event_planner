@@ -12,21 +12,22 @@ class MaombiDetailScreen extends StatefulWidget {
 
 class _MaombiDetailScreenState extends State<MaombiDetailScreen> {
   final db = FirebaseFirestore.instance;
+  TextEditingController kataaController = new TextEditingController();
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: AppBar(title: Text("Maombi ya Kumbi Yako")),
+        appBar: AppBar(title: Text("Request details")),
         body: Padding(
           padding: const EdgeInsets.all(28.0),
           child:
               Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
             Text(
-              "Taarifa za ukodishaji",
+              "Request information",
               style: TextStyle(fontWeight: FontWeight.bold),
             ),
             Row(
               children: [
-                Text("Jina la Ukumbi"),
+                Text("Accessory name"),
                 Spacer(),
                 Text(
                   widget.ukumbi.get('ukumbi_name'),
@@ -37,7 +38,7 @@ class _MaombiDetailScreenState extends State<MaombiDetailScreen> {
             SizedBox(height: 8),
             Row(
               children: [
-                Text("Tarehe"),
+                Text("Date"),
                 Spacer(),
                 Text(
                   widget.ukumbi.get('date'),
@@ -50,7 +51,7 @@ class _MaombiDetailScreenState extends State<MaombiDetailScreen> {
               height: 20,
             ),
             Text(
-              "Taarifa za Mkodishaji",
+              "Renter information",
               style: TextStyle(fontWeight: FontWeight.bold),
             ),
             FutureBuilder(
@@ -64,19 +65,19 @@ class _MaombiDetailScreenState extends State<MaombiDetailScreen> {
                   if (snapshot.connectionState == ConnectionState.waiting) {
                     return const Padding(
                       padding: EdgeInsets.all(28.0),
-                      child: Text("Inapakua..."),
+                      child: Text("Loading..."),
                     );
                   }
                   if (snapshot.hasError) {
                     return const Padding(
                       padding: EdgeInsets.all(28.0),
-                      child: Text("Tatizo limejitokeza..."),
+                      child: Text("There was an error..."),
                     );
                   }
                   if (!snapshot.hasData) {
                     const Padding(
                       padding: EdgeInsets.all(28.0),
-                      child: Text("Hakuna taarifa"),
+                      child: Text("No data found"),
                     );
                   }
 
@@ -87,7 +88,7 @@ class _MaombiDetailScreenState extends State<MaombiDetailScreen> {
                     children: [
                       Row(
                         children: [
-                          Text("Jina Kamili"),
+                          Text("Full name"),
                           Spacer(),
                           Text(
                             item!.get('name'),
@@ -100,10 +101,10 @@ class _MaombiDetailScreenState extends State<MaombiDetailScreen> {
                       ),
                       Row(
                         children: [
-                          Text("Namba ya simu"),
+                          Text("Phone number"),
                           Spacer(),
                           Text(
-                            item!.get('phone'),
+                            item.get('phone'),
                             style: Theme.of(context).textTheme.headline6,
                           )
                         ],
@@ -113,10 +114,10 @@ class _MaombiDetailScreenState extends State<MaombiDetailScreen> {
                       ),
                       Row(
                         children: [
-                          Text("Barua Pepe"),
+                          Text("Email Address"),
                           Spacer(),
                           Text(
-                            item!.get('email'),
+                            item.get('email'),
                             style: Theme.of(context).textTheme.headline6,
                           )
                         ],
@@ -137,7 +138,7 @@ class _MaombiDetailScreenState extends State<MaombiDetailScreen> {
             //     "NB: Kama ulishakubali ukakubali tena hapa, maombi ya awali yote yatakuwa yamekataliwa "),
             FutureBuilder(
                 future: db
-                    .collection("ukumbi")
+                    .collection("accessories")
                     .doc(widget.ukumbi.get('ukumbi_id'))
                     .get(),
                 builder: (context,
@@ -146,20 +147,20 @@ class _MaombiDetailScreenState extends State<MaombiDetailScreen> {
                   if (snapshot.connectionState == ConnectionState.waiting) {
                     return const Padding(
                       padding: EdgeInsets.all(28.0),
-                      child: Text("Inapakua..."),
+                      child: Text("Loading..."),
                     );
                   }
 
                   if (snapshot.hasError) {
                     return const Padding(
                       padding: EdgeInsets.all(28.0),
-                      child: Text("Tatizo limejitokeza..."),
+                      child: Text("There was a problem..."),
                     );
                   }
                   if (!snapshot.hasData) {
                     const Padding(
                       padding: EdgeInsets.all(28.0),
-                      child: Text("Hakuna taarifa"),
+                      child: Text("No data"),
                     );
                   }
 
@@ -190,25 +191,24 @@ class _MaombiDetailScreenState extends State<MaombiDetailScreen> {
                                     //       array.add(acceptedDate);
                                     //     }
                                     db
-                                        .collection("ukumbi")
+                                        .collection("accessories")
                                         .doc(widget.ukumbi.get('ukumbi_id'))
                                         .update({
                                       "acceptedUser": null,
                                     }).then((value) {
                                       ScaffoldMessenger.of(context)
                                           .showSnackBar(SnackBar(
-                                        content: Text("zoezi limefanikiwa"),
+                                        content: Text("successfully"),
                                       ));
                                     }).onError((error, stackTrace) {
                                       ScaffoldMessenger.of(context)
                                           .showSnackBar(SnackBar(
-                                        content:
-                                            Text("kuna tatizo haijafanikiwa"),
+                                        content: Text("There was a problem"),
                                       ));
                                     });
 
                                     QuerySnapshot lists = await db
-                                        .collection("bookings")
+                                        .collection("rentings")
                                         .where("ukumbi_id",
                                             isEqualTo:
                                                 widget.ukumbi.get('ukumbi_id'))
@@ -221,7 +221,7 @@ class _MaombiDetailScreenState extends State<MaombiDetailScreen> {
                                       for (var element in lists.docs) {
                                         // print("element");
                                         await db
-                                            .collection("bookings")
+                                            .collection("rentings")
                                             .doc(element.id)
                                             .update({
                                           "active": false,
@@ -233,12 +233,12 @@ class _MaombiDetailScreenState extends State<MaombiDetailScreen> {
                                     }
 
                                     db
-                                        .collection("bookings")
+                                        .collection("rentings")
                                         .doc(widget.ukumbi.id)
                                         .update({"status": 1, "active": true});
                                   }
                                 : null,
-                            child: Text("Kubali"))),
+                            child: Text("Accept"))),
                     SizedBox(
                       width: 12,
                     ),
@@ -250,39 +250,72 @@ class _MaombiDetailScreenState extends State<MaombiDetailScreen> {
                         flex: 1,
                         child: ElevatedButton(
                           style: ElevatedButton.styleFrom(primary: Colors.red),
-                          onPressed: () {
+                          onPressed: () async {
+                            var result = await showDialog<bool>(
+                              context: context,
+                              builder: (BuildContext context) => AlertDialog(
+                                title: Text('Reason'),
+                                content: TextFormField(
+                                    onTap: () => {},
+                                    keyboardType: TextInputType.text,
+                                    controller: kataaController,
+                                    decoration:
+                                        InputDecoration(label: Text("why"))),
+                                actions: <Widget>[
+                                  TextButton(
+                                    onPressed: () =>
+                                        Navigator.pop(context, false),
+                                    child: const Text('Cancel'),
+                                  ),
+                                  TextButton(
+                                    onPressed: () =>
+                                        Navigator.pop(context, true),
+                                    child: const Text('OK'),
+                                  ),
+                                ],
+                              ),
+                            );
+
+                            if (result! == false) {
+                              return;
+                            }
                             db
-                                .collection("bookings")
+                                .collection("rentings")
                                 .doc(widget.ukumbi.id)
-                                .update({"status": -1}).then((value) {
+                                .update({
+                              "status": -1,
+                              "reason_denied": kataaController.text
+                            }).then((value) {
+                              ScaffoldMessenger.of(context)
+                                  .showSnackBar(const SnackBar(
+                                content: Text("successfully",
+                                    style: TextStyle(fontSize: 16)),
+                                duration: Duration(seconds: 5),
+                              ));
                               // if(Authen)
-                              if (snapshot.data!.get('acceptedUser') ==
-                                  AuthenticationHelper().user.uid) {
-                                db
-                                    .collection("ukumbi")
-                                    .doc(widget.ukumbi.get('ukumbi_id'))
-                                    .update({"acceptedUser": null}).then(
-                                        (value) {
-                                  ScaffoldMessenger.of(context)
-                                      .showSnackBar(SnackBar(
-                                    content: Text("zoezi limefanikiwa"),
-                                  ));
-                                }).onError((error, stackTrace) {
-                                  ScaffoldMessenger.of(context)
-                                      .showSnackBar(SnackBar(
-                                    content: Text("kuna tatizo haijafanikiwa"),
-                                  ));
-                                });
-                              }
+                              // if (snapshot.data!.get('acceptedUser') ==
+                              //     AuthenticationHelper().user.uid) {
+                              //   db
+                              //       .collection("accessories")
+                              //       .doc(widget.ukumbi.get('ukumbi_id'))
+                              //       .update({"acceptedUser": null})
+                              //       .then((value) {})
+                              //       .onError((error, stackTrace) {
+                              //         ScaffoldMessenger.of(context)
+                              //             .showSnackBar(SnackBar(
+                              //           content:
+                              //               Text("There was a problem"),
+                              //         ));
+                              //       });
+                              // }
                             }).onError((error, stackTrace) {
                               ScaffoldMessenger.of(context)
                                   .showSnackBar(SnackBar(
-                                content: Text("kuna tatizo haijafanikiwa"),
+                                content: Text("There was a problem"),
                               ));
                             });
-                            ;
                           },
-                          child: Text("Kataa"),
+                          child: Text("Deny"),
                         ))
                   ]);
                 }),

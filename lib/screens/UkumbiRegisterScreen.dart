@@ -182,39 +182,6 @@ class _UkumbiRegisterScreenState extends State<UkumbiRegisterScreen> {
                                   ),
                           ),
                         )),
-                    Container(
-                        padding: EdgeInsets.all(8),
-                        margin: EdgeInsets.all(8),
-                        child: InkWell(
-                          onTap: () async {
-                            _imageStartSelection2 = true;
-                            await _db.imgFromGallery().then((value) {
-                              if (value != null) {
-                                setState(() {
-                                  isImg2 = true;
-                                  _photo2 = value;
-                                });
-                              }
-                            });
-                          },
-                          child: Container(
-                            margin: EdgeInsets.only(right: 12),
-                            width: 80,
-                            height: 80,
-                            decoration:
-                                BoxDecoration(color: Colors.grey.shade300),
-                            child: isImg2
-                                ? Image.file(
-                                    _photo2!,
-                                    width: 80,
-                                    height: 80,
-                                    fit: BoxFit.cover,
-                                  )
-                                : Icon(
-                                    Icons.photo_camera,
-                                  ),
-                          ),
-                        )),
                   ]),
                   Container(
                     padding: EdgeInsets.all(8),
@@ -262,30 +229,32 @@ class _UkumbiRegisterScreenState extends State<UkumbiRegisterScreen> {
                                                     .toString() +
                                                 userId)
                                         .then((value) {
-                                      FirebaseFirestore.instance.collection("accessories").doc(doc_value.id).update({"image": value}).then((value) {
-                                         GoRouter.of(context).go("/home");
+                                      FirebaseFirestore.instance
+                                          .collection("accessories")
+                                          .doc(doc_value.id)
+                                          .update({"image": value}).then(
+                                              (value) {
+                                        GoRouter.of(context).go("/home");
                                         setState(() {
                                           isClicked = false;
                                         });
                                       }).onError((error, stackTrace) {
-                                          setState(() {
+                                        setState(() {
                                           isClicked = false;
                                         });
-                                         ScaffoldMessenger.of(context)
+                                        ScaffoldMessenger.of(context)
                                             .showSnackBar(SnackBar(
                                                 content:
                                                     Text(error.toString())));
                                       });
                                     }).onError((error, stackTrace) {
-                                        setState(() {
+                                      setState(() {
                                         isClicked = false;
                                       });
                                       ScaffoldMessenger.of(context)
                                           .showSnackBar(SnackBar(
                                               content: Text(error.toString())));
                                     });
-                                  
-                                   
                                   }).onError((error, stackTrace) {
                                     setState(() {
                                       isClicked = false;

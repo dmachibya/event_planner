@@ -24,12 +24,12 @@ class _KumbiUlizoKodiDetailScreenState
         padding: const EdgeInsets.all(28.0),
         child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
           Text(
-            "Taarifa za ukodishaji",
+            "Renting details",
             style: TextStyle(fontWeight: FontWeight.bold),
           ),
           Row(
             children: [
-              Text("Jina la Ukumbi"),
+              Text("Accessory"),
               Spacer(),
               Text(
                 widget.ukumbi.get('ukumbi_name'),
@@ -40,7 +40,7 @@ class _KumbiUlizoKodiDetailScreenState
           SizedBox(height: 8),
           Row(
             children: [
-              Text("Tarehe"),
+              Text("Date"),
               Spacer(),
               Text(
                 widget.ukumbi.get('date'),
@@ -53,7 +53,7 @@ class _KumbiUlizoKodiDetailScreenState
             height: 20,
           ),
           Text(
-            "Taarifa za Mwenye Ukumbi",
+            "Admin information",
             style: TextStyle(fontWeight: FontWeight.bold),
           ),
           FutureBuilder(
@@ -67,19 +67,19 @@ class _KumbiUlizoKodiDetailScreenState
                 if (snapshot.connectionState == ConnectionState.waiting) {
                   return const Padding(
                     padding: EdgeInsets.all(28.0),
-                    child: Text("Inapakua..."),
+                    child: Text("Loading..."),
                   );
                 }
                 if (snapshot.hasError) {
                   return const Padding(
                     padding: EdgeInsets.all(28.0),
-                    child: Text("Tatizo limejitokeza..."),
+                    child: Text("There was a problem..."),
                   );
                 }
                 if (!snapshot.hasData) {
                   const Padding(
                     padding: EdgeInsets.all(28.0),
-                    child: Text("Hakuna taarifa"),
+                    child: Text("No data found"),
                   );
                 }
 
@@ -90,7 +90,7 @@ class _KumbiUlizoKodiDetailScreenState
                   children: [
                     Row(
                       children: [
-                        Text("Jina Kamili"),
+                        Text("Fullname"),
                         Spacer(),
                         Text(
                           item!.get('name'),
@@ -103,7 +103,7 @@ class _KumbiUlizoKodiDetailScreenState
                     ),
                     Row(
                       children: [
-                        Text("Namba ya simu"),
+                        Text("Phone Number"),
                         Spacer(),
                         Text(
                           item!.get('phone'),
@@ -116,7 +116,7 @@ class _KumbiUlizoKodiDetailScreenState
                     ),
                     Row(
                       children: [
-                        Text("Barua Pepe"),
+                        Text("Email Address"),
                         Spacer(),
                         Text(
                           item!.get('email'),
@@ -132,7 +132,7 @@ class _KumbiUlizoKodiDetailScreenState
             height: 20,
           ),
           Text(
-            "Hali ya maombi yako",
+            "Your request status",
             style: TextStyle(fontWeight: FontWeight.bold),
           ),
           FutureBuilder(
@@ -146,27 +146,26 @@ class _KumbiUlizoKodiDetailScreenState
                 if (snapshot.connectionState == ConnectionState.waiting) {
                   return const Padding(
                     padding: EdgeInsets.all(28.0),
-                    child: Text("Inapakua..."),
+                    child: Text("Loading..."),
                   );
                 }
                 if (!snapshot.hasData) {
                   return const Padding(
                     padding: EdgeInsets.all(28.0),
-                    child: Text("Hakuna taarifa"),
+                    child: Text("No data found"),
                   );
                 }
                 if (snapshot.hasError) {
                   return const Padding(
                       padding: EdgeInsets.all(28.0),
-                      child: Text("Kuna tatizo, jaribu tena baadae"));
+                      child: Text("There was problem please try again later"));
                 }
-                var isThisUser = widget.ukumbi.get('active');
                 return Text(
                   widget.ukumbi.get('status') == 1
-                      ? 'umekubaliwa'
+                      ? 'Accepted'
                       : widget.ukumbi.get('status') == 0
-                          ? 'inachakatwa'
-                          : 'umekataliwa',
+                          ? 'pending'
+                          : 'denied',
                   style: Theme.of(context).textTheme.headline5!.copyWith(
                         color: widget.ukumbi.get('status') == 1
                             ? Colors.green

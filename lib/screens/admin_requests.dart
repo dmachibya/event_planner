@@ -1,5 +1,6 @@
 import 'package:event_planner/screens/UkumbiDetailScreen.dart';
 import 'package:event_planner/screens/UkumbiRegisterScreen.dart';
+import 'package:event_planner/screens/maombi_detail_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:go_router/go_router.dart';
@@ -8,14 +9,14 @@ import 'package:app_popup_menu/app_popup_menu.dart';
 
 import '../utils/authentication.dart';
 
-class KumbiZakoScreen extends StatefulWidget {
-  KumbiZakoScreen({Key? key}) : super(key: key);
+class MaombiKukodiScreen extends StatefulWidget {
+  MaombiKukodiScreen({Key? key}) : super(key: key);
 
   @override
-  State<KumbiZakoScreen> createState() => _KumbiZakoScreenState();
+  State<MaombiKukodiScreen> createState() => _MaombiKukodiScreenState();
 }
 
-class _KumbiZakoScreenState extends State<KumbiZakoScreen> {
+class _MaombiKukodiScreenState extends State<MaombiKukodiScreen> {
   // final db = FirebaseFire
   final db = FirebaseFirestore.instance;
 
@@ -36,39 +37,16 @@ class _KumbiZakoScreenState extends State<KumbiZakoScreen> {
     var height = MediaQuery.of(context).size.height;
 
     return Scaffold(
-        appBar: AppBar(title: Text("Your Accessories")),
+        appBar: AppBar(title: Text("Users requests")),
         body: Container(
           padding:
               EdgeInsets.symmetric(vertical: 20, horizontal: 0.068 * width),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Row(
-                children: [
-                  Text(
-                    "List of Accessories",
-                    style: Theme.of(context)
-                        .textTheme
-                        .headline5!
-                        .copyWith(fontWeight: FontWeight.w600),
-                  ),
-                  Spacer(),
-                  ElevatedButton(
-                    child: Text("New Accessory"),
-                    onPressed: () {
-                      GoRouter.of(context).go('/home/ukumbi_register');
-                    },
-                  ),
-                ],
-              ),
-              Divider(),
               Expanded(
                 child: StreamBuilder<QuerySnapshot>(
-                    stream: db
-                        .collection("accessories")
-                        .where("user_id",
-                            isEqualTo: AuthenticationHelper().user.uid)
-                        .snapshots(),
+                    stream: db.collection("rentings").snapshots(),
                     builder: (context, AsyncSnapshot<QuerySnapshot> snapshot) {
                       if (snapshot.connectionState == ConnectionState.waiting) {
                         return Text("Loading...");
@@ -92,7 +70,7 @@ class _KumbiZakoScreenState extends State<KumbiZakoScreen> {
                                       context,
                                       MaterialPageRoute(
                                           builder: (context) =>
-                                              UkumbiDetailScreen(
+                                              MaombiDetailScreen(
                                                   ukumbi: item)));
                                 },
                                 child: Card(
@@ -108,14 +86,41 @@ class _KumbiZakoScreenState extends State<KumbiZakoScreen> {
                                               item
                                                       .data()
                                                       .toString()
-                                                      .contains('name')
-                                                  ? item.get('name')
+                                                      .contains('ukumbi_name')
+                                                  ? item.get('ukumbi_name')
                                                   : '',
                                               style: TextStyle(
                                                   fontWeight: FontWeight.bold)),
+                                          SizedBox(
+                                            width: 4,
+                                          ),
+                                          Container(
+                                            child: Text(
+                                              item.get('status') == 1
+                                                  ? 'Accepted'
+                                                  : item.get('status') == 0
+                                                      ? 'pending'
+                                                      : 'Rejected',
+                                              style: TextStyle(fontSize: 12),
+                                            ),
+                                            padding: EdgeInsets.symmetric(
+                                                vertical: 4, horizontal: 8),
+                                            decoration: BoxDecoration(
+                                                borderRadius:
+                                                    BorderRadius.circular(10),
+                                                color: item.get('status') == 1
+                                                    ? Colors.green.shade200
+                                                    : item.get('status') == -1
+                                                        ? Colors.red.shade200
+                                                        : Colors.grey),
+                                          ),
                                           Spacer(),
                                           AppPopupMenu(
                                             menuItems: const [
+                                              PopupMenuItem(
+                                                value: 2,
+                                                child: Text('View'),
+                                              ),
                                               PopupMenuItem(
                                                 value: 3,
                                                 child: Text('Delete'),
@@ -127,10 +132,16 @@ class _KumbiZakoScreenState extends State<KumbiZakoScreen> {
                                               // print(item.id);
                                               if (value == 2) {
                                                 // Navigator
+                                                Navigator.push(
+                                                    context,
+                                                    MaterialPageRoute(
+                                                        builder: (context) =>
+                                                            MaombiDetailScreen(
+                                                                ukumbi: item)));
                                               } else if (value == 3) {
                                                 // print("here inside");
                                                 db
-                                                    .collection("accessories")
+                                                    .collection("ukumbi")
                                                     .doc(item.id)
                                                     .delete();
                                               }

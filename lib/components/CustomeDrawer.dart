@@ -16,41 +16,52 @@ class CustomHomeDrawer extends StatelessWidget {
     return Drawer(
         child: Column(children: [
       DrawerHeader(
-        child: FutureBuilder(
-            future: FirebaseFirestore.instance
-                .collection("users")
-                .doc(AuthenticationHelper().user.uid)
-                .get(),
-            builder: (context,
-                AsyncSnapshot<DocumentSnapshot<Map<String, dynamic>>>
-                    snapshot) {
-              if (snapshot.hasError) {
-                return Text("There was an eror");
-              }
-              if (!snapshot.hasData) {
-                return Text("No Data Available");
-              }
-              return Container(
-                  child: Row(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                    Container(
-                        width: 60,
-                        height: 60,
-                        decoration: BoxDecoration(
-                            color: Colors.grey.shade300,
-                            borderRadius: BorderRadius.circular(100)),
-                        child: Icon(Icons.person, size: 32)),
-                    SizedBox(width: 20),
-                    Column(
+        child: Container(
+          alignment: Alignment.center,
+          padding: EdgeInsets.only(top: 30, left: 8),
+          height: 100,
+          decoration: BoxDecoration(
+            image: new DecorationImage(
+              image: AssetImage("images/wedding1.jpg"),
+              fit: BoxFit.cover,
+            ),
+          ),
+          child: FutureBuilder(
+              future: FirebaseFirestore.instance
+                  .collection("users")
+                  .doc(AuthenticationHelper().user.uid)
+                  .get(),
+              builder: (context,
+                  AsyncSnapshot<DocumentSnapshot<Map<String, dynamic>>>
+                      snapshot) {
+                if (snapshot.hasError) {
+                  return Text("There was an eror");
+                }
+                if (!snapshot.hasData) {
+                  return Text("No Data Available");
+                }
+                return Container(
+                    child: Row(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Text(snapshot.data!.get('name'),
-                              style: Theme.of(context).textTheme.headline5),
-                          Text(snapshot.data!.get('email'))
-                        ])
-                  ]));
-            }),
+                      Container(
+                          width: 60,
+                          height: 60,
+                          decoration: BoxDecoration(
+                              color: Colors.grey.shade300,
+                              borderRadius: BorderRadius.circular(100)),
+                          child: Icon(Icons.person, size: 32)),
+                      SizedBox(width: 20),
+                      Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(snapshot.data!.get('name'),
+                                style: Theme.of(context).textTheme.headline6),
+                            Text(snapshot.data!.get('email'))
+                          ])
+                    ]));
+              }),
+        ),
       ),
       ListTile(
         leading: Icon(Icons.home),
@@ -60,43 +71,52 @@ class CustomHomeDrawer extends StatelessWidget {
               MaterialPageRoute(builder: (context) => SuccessfulScreen()));
         },
       ),
-      ListTile(
-        leading: Icon(Icons.add),
-        title: Text("Register Accessory"),
-        onTap: () {
-          Navigator.of(context).pop();
-          GoRouter.of(context).go("/home/ukumbi_register");
-        },
-      ),
-      // ListTile(
-      //   leading: Icon(Icons.list),
-      //   title: Text("Your Accessories"),
-      //   onTap: () {
-      //     Navigator.of(context).pop();
-      //     GoRouter.of(context).go("/home/kumbi_zako");
-      //   },
-      // ),
-      // ListTile(
-      //   leading: Icon(Icons.list),
-      //   title: Text("Requested Accessories"),
-      //   onTap: () {
-      //     Navigator.of(context).pop();
-      //     GoRouter.of(context).go("/home/kumbi_ulizokodi");
-      //   },
-      // ),
-      // ListTile(
-      //   leading: Icon(Icons.calendar_month),
-      //   title: Text("Maombi ya Kukodi"),
-      //   onTap: () {
-      //     Navigator.of(context).pop();
+      AuthenticationHelper().isAdmin
+          ? Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                ListTile(
+                  leading: Icon(Icons.add),
+                  title: Text("Register Accessory"),
+                  onTap: () {
+                    Navigator.of(context).pop();
+                    GoRouter.of(context).go("/home/ukumbi_register");
+                  },
+                ),
+                ListTile(
+                  leading: Icon(Icons.list),
+                  title: Text("All Accessories"),
+                  onTap: () {
+                    Navigator.of(context).pop();
+                    GoRouter.of(context).go("/home/kumbi_zako");
+                  },
+                ),
+                ListTile(
+                  leading: Icon(Icons.list),
+                  title: Text("Requested Accessories"),
+                  onTap: () {
+                    Navigator.of(context).pop();
+                    GoRouter.of(context).go("/home/maombi_kukodi");
+                  },
+                ),
+              ],
+            )
+          : Container(),
+      !AuthenticationHelper().isAdmin
+          ? ListTile(
+              leading: Icon(Icons.calendar_month),
+              title: Text("Your Requests"),
+              onTap: () {
+                Navigator.of(context).pop();
 
-      //     GoRouter.of(context).go('/home/maombi_kukodi');
-      //     // Navigator.push(
-      //     //     context,
-      //     //     MaterialPageRoute(
-      //     //         builder: (context) => UkumbiRegisterScreen()));
-      //   },
-      // ),
+                GoRouter.of(context).go('/home/kumbi_ulizokodi');
+                // Navigator.push(
+                //     context,
+                //     MaterialPageRoute(
+                //         builder: (context) => UkumbiRegisterScreen()));
+              },
+            )
+          : Container(),
       ListTile(
         leading: Icon(Icons.logout),
         title: Text("Log Out"),
