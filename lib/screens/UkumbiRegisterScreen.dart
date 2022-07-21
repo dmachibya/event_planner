@@ -45,7 +45,7 @@ class _UkumbiRegisterScreenState extends State<UkumbiRegisterScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text("Sajili Ukumbi"),
+        title: Text("Register Accessory"),
       ),
       body: Container(
         child: Form(
@@ -61,10 +61,10 @@ class _UkumbiRegisterScreenState extends State<UkumbiRegisterScreen> {
                     child: TextFormField(
                       controller: nameController,
                       validator: (value) => value == null || value.isEmpty
-                          ? 'Jina la ukumbi linatakiwa'
+                          ? 'Please write accessory name'
                           : null,
                       decoration: const InputDecoration(
-                        label: Text("Jina la Ukumbi"),
+                        label: Text("Accessory Name"),
                         hoverColor: Colors.black26,
                         hintStyle: TextStyle(
                             fontSize: 18,
@@ -73,49 +73,49 @@ class _UkumbiRegisterScreenState extends State<UkumbiRegisterScreen> {
                       ),
                     ),
                   ),
-                  Container(
-                    margin: EdgeInsets.all(8),
-                    padding: EdgeInsets.all(8),
-                    child: Column(
-                      children: [
-                        DropdownSearch<String>(
-                          mode: Mode.MENU,
-                          popupBackgroundColor: Colors.white,
-                          showSelectedItems: true,
-                          items: Ukumbi.categories,
-                          dropdownSearchDecoration: InputDecoration(
-                            label: Text("Aina ya Ukumbi"),
-                          ),
-                          // popupItemDisabled: (String s) => s.startsWith('I'),
-                          onChanged: (data) {
-                            setState(() {
-                              categoryController.text = data as String;
-                            });
-                          },
-                          selectedItem: Ukumbi.categories[0],
-                        ),
-                        categoryError
-                            ? Text("Aina ya ukumbi inatakiwa")
-                            : Text(''),
-                      ],
-                    ),
-                  ),
-                  Container(
-                      padding: EdgeInsets.all(8),
-                      margin: EdgeInsets.all(8),
-                      child: TextFormField(
-                        controller: aboutController,
-                        maxLines: 2,
-                        decoration:
-                            InputDecoration(label: Text("Kuhusu Ukumbi")),
-                      )),
-                  Container(
-                      padding: EdgeInsets.all(8),
-                      margin: EdgeInsets.all(8),
-                      child: TextFormField(
-                        controller: locationController,
-                        decoration: InputDecoration(label: Text("Mahali")),
-                      )),
+                  // Container(
+                  //   margin: EdgeInsets.all(8),
+                  //   padding: EdgeInsets.all(8),
+                  //   child: Column(
+                  //     children: [
+                  //       DropdownSearch<String>(
+                  //         mode: Mode.MENU,
+                  //         popupBackgroundColor: Colors.white,
+                  //         showSelectedItems: true,
+                  //         items: Ukumbi.categories,
+                  //         dropdownSearchDecoration: InputDecoration(
+                  //           label: Text("Aina ya Ukumbi"),
+                  //         ),
+                  //         // popupItemDisabled: (String s) => s.startsWith('I'),
+                  //         onChanged: (data) {
+                  //           setState(() {
+                  //             categoryController.text = data as String;
+                  //           });
+                  //         },
+                  //         selectedItem: Ukumbi.categories[0],
+                  //       ),
+                  //       categoryError
+                  //           ? Text("Aina ya ukumbi inatakiwa")
+                  //           : Text(''),
+                  //     ],
+                  //   ),
+                  // ),
+                  // Container(
+                  //     padding: EdgeInsets.all(8),
+                  //     margin: EdgeInsets.all(8),
+                  //     child: TextFormField(
+                  //       controller: aboutController,
+                  //       maxLines: 2,
+                  //       decoration:
+                  //           InputDecoration(label: Text("Kuhusu Ukumbi")),
+                  //     )),
+                  // Container(
+                  //     padding: EdgeInsets.all(8),
+                  //     margin: EdgeInsets.all(8),
+                  //     child: TextFormField(
+                  //       controller: locationController,
+                  //       decoration: InputDecoration(label: Text("Mahali")),
+                  //     )),
                   Container(
                     padding: EdgeInsets.all(16),
                     child: TextFormField(
@@ -123,18 +123,18 @@ class _UkumbiRegisterScreenState extends State<UkumbiRegisterScreen> {
                       // keyboardType: KeyboardTy,
                       validator: (value) {
                         if (value == null || value.isEmpty) {
-                          return 'Gharama inatakiwa';
+                          return 'Price must be filled';
                         }
                         int val = int.tryParse(value) ?? 0;
 
                         if (val == 0) {
-                          return "Tafadhali jaza gharama sahihi";
+                          return "Please fill in the price";
                         }
 
                         return null;
                       },
                       decoration: const InputDecoration(
-                        label: Text("Gharama ya kukodisha"),
+                        label: Text("Price"),
                         hoverColor: Colors.black26,
                         hintStyle: TextStyle(
                             fontSize: 18,
@@ -145,7 +145,7 @@ class _UkumbiRegisterScreenState extends State<UkumbiRegisterScreen> {
                   ),
                   Padding(
                     padding: const EdgeInsets.only(left: 16.0, top: 10),
-                    child: Text("Picha za Ukumbi",
+                    child: Text("Pictures",
                         style: Theme.of(context).textTheme.headline6),
                   ),
                   Row(children: [
@@ -232,56 +232,69 @@ class _UkumbiRegisterScreenState extends State<UkumbiRegisterScreen> {
                                   setState(() {
                                     isClicked = true;
                                   });
-                                  if (categoryController.text == '' ||
-                                      categoryController.text == null) {
-                                    var imagePath = await _db.uploadFile(
-                                        photo: _photo,
-                                        userId: DateTime.now()
-                                                .millisecondsSinceEpoch
-                                                .toString() +
-                                            userId);
-                                    var image2Path = await _db.uploadFile(
-                                        photo: _photo,
-                                        userId: DateTime.now()
-                                                .millisecondsSinceEpoch
-                                                .toString() +
-                                            userId);
-                                    // var array = ["null"];
-                                    FirebaseFirestore.instance
-                                        .collection("ukumbi")
-                                        .add({
-                                      "category":
-                                          categoryController.text.length <= 0
-                                              ? "Sherehe"
-                                              : categoryController.text,
-                                      "about": aboutController.text,
-                                      "location": locationController.text,
-                                      "name": nameController.text,
-                                      "price": priceController.text,
-                                      "bookValue": 0,
-                                      "isBooked": false,
-                                      "isBookedAccepted": false,
-                                      "isBookedDate": null,
-                                      "acceptedUser": null,
-                                      "image": imagePath,
-                                      "image2": image2Path,
-                                      "user_id":
-                                          AuthenticationHelper().user.uid,
-                                    }).then((value) {
-                                      GoRouter.of(context).go("/home");
-                                      setState(() {
-                                        isClicked = false;
+
+                                  // var array = ["null"];
+                                  FirebaseFirestore.instance
+                                      .collection("accessories")
+                                      .add({
+                                    "category":
+                                        categoryController.text.length <= 0
+                                            ? "Sherehe"
+                                            : categoryController.text,
+                                    "about": aboutController.text,
+                                    "location": locationController.text,
+                                    "name": nameController.text,
+                                    "price": priceController.text,
+                                    "bookValue": 0,
+                                    "isBooked": false,
+                                    "isBookedAccepted": false,
+                                    "isBookedDate": null,
+                                    "acceptedUser": null,
+                                    "image": "null",
+                                    "image2": "null",
+                                    "user_id": AuthenticationHelper().user.uid,
+                                  }).then((doc_value) {
+                                    var imagePath = _db
+                                        .uploadFile(
+                                            photo: _photo,
+                                            userId: DateTime.now()
+                                                    .millisecondsSinceEpoch
+                                                    .toString() +
+                                                userId)
+                                        .then((value) {
+                                      FirebaseFirestore.instance.collection("accessories").doc(doc_value.id).update({"image": value}).then((value) {
+                                         GoRouter.of(context).go("/home");
+                                        setState(() {
+                                          isClicked = false;
+                                        });
+                                      }).onError((error, stackTrace) {
+                                          setState(() {
+                                          isClicked = false;
+                                        });
+                                         ScaffoldMessenger.of(context)
+                                            .showSnackBar(SnackBar(
+                                                content:
+                                                    Text(error.toString())));
                                       });
                                     }).onError((error, stackTrace) {
-                                      setState(() {
+                                        setState(() {
                                         isClicked = false;
                                       });
                                       ScaffoldMessenger.of(context)
                                           .showSnackBar(SnackBar(
-                                              content: Text(
-                                                  "Tatizo limejitokeza, jaribu tena")));
+                                              content: Text(error.toString())));
                                     });
-                                  }
+                                  
+                                   
+                                  }).onError((error, stackTrace) {
+                                    setState(() {
+                                      isClicked = false;
+                                    });
+                                    ScaffoldMessenger.of(context).showSnackBar(
+                                        SnackBar(
+                                            content: Text(
+                                                "Tatizo limejitokeza, jaribu tena")));
+                                  });
                                 }
                               }
                             : null,

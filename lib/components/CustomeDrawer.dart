@@ -54,7 +54,7 @@ class CustomHomeDrawer extends StatelessWidget {
       ),
       ListTile(
         leading: Icon(Icons.home),
-        title: Text("Mwanzo"),
+        title: Text("Home"),
         onTap: () {
           Navigator.push(context,
               MaterialPageRoute(builder: (context) => SuccessfulScreen()));
@@ -62,47 +62,47 @@ class CustomHomeDrawer extends StatelessWidget {
       ),
       ListTile(
         leading: Icon(Icons.add),
-        title: Text("Sajili Ukumbi"),
+        title: Text("Register Accessory"),
         onTap: () {
           Navigator.of(context).pop();
           GoRouter.of(context).go("/home/ukumbi_register");
         },
       ),
-      ListTile(
-        leading: Icon(Icons.list),
-        title: Text("kumbi zako"),
-        onTap: () {
-          Navigator.of(context).pop();
-          GoRouter.of(context).go("/home/kumbi_zako");
-        },
-      ),
-      ListTile(
-        leading: Icon(Icons.list),
-        title: Text("kumbi Ulizokodi"),
-        onTap: () {
-          Navigator.of(context).pop();
-          GoRouter.of(context).go("/home/kumbi_ulizokodi");
-        },
-      ),
-      ListTile(
-        leading: Icon(Icons.calendar_month),
-        title: Text("Maombi ya Kukodi"),
-        onTap: () {
-          Navigator.of(context).pop();
+      // ListTile(
+      //   leading: Icon(Icons.list),
+      //   title: Text("Your Accessories"),
+      //   onTap: () {
+      //     Navigator.of(context).pop();
+      //     GoRouter.of(context).go("/home/kumbi_zako");
+      //   },
+      // ),
+      // ListTile(
+      //   leading: Icon(Icons.list),
+      //   title: Text("Requested Accessories"),
+      //   onTap: () {
+      //     Navigator.of(context).pop();
+      //     GoRouter.of(context).go("/home/kumbi_ulizokodi");
+      //   },
+      // ),
+      // ListTile(
+      //   leading: Icon(Icons.calendar_month),
+      //   title: Text("Maombi ya Kukodi"),
+      //   onTap: () {
+      //     Navigator.of(context).pop();
 
-          GoRouter.of(context).go('/home/maombi_kukodi');
-          // Navigator.push(
-          //     context,
-          //     MaterialPageRoute(
-          //         builder: (context) => UkumbiRegisterScreen()));
-        },
-      ),
+      //     GoRouter.of(context).go('/home/maombi_kukodi');
+      //     // Navigator.push(
+      //     //     context,
+      //     //     MaterialPageRoute(
+      //     //         builder: (context) => UkumbiRegisterScreen()));
+      //   },
+      // ),
       ListTile(
         leading: Icon(Icons.logout),
-        title: Text("Ondoka"),
+        title: Text("Log Out"),
         onTap: () {
           AuthenticationHelper().signOut().then((value) {
-            GoRouter.of(context).go("/welcome");
+            GoRouter.of(context).go("/login");
           });
           // Navigator.push(
           //     context,

@@ -18,12 +18,12 @@ import 'authentication.dart';
 
 class AppRouter {
   final router = GoRouter(
-    initialLocation: "/welcome",
+    initialLocation: "/login",
     routes: [
       GoRoute(
-          path: "/welcome",
+          path: "/login",
           builder: (context, state) {
-            return LandingScreen();
+            return LoginScreen();
           },
           redirect: (_) {
             if (AuthenticationHelper().user != null) {
@@ -32,11 +32,6 @@ class AppRouter {
             return null;
           },
           routes: [
-            GoRoute(
-                path: 'login',
-                builder: (context, state) {
-                  return LoginScreen();
-                }),
             GoRoute(
               path: 'register',
               builder: (context, state) {

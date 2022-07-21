@@ -20,22 +20,22 @@ class SuccessfulScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       drawer: CustomHomeDrawer(),
-      appBar: AppBar(title: Text("Event Reservation")),
+      appBar: AppBar(title: Text("WARMA")),
       body: Container(
           padding: EdgeInsets.symmetric(vertical: 20, horizontal: 16),
           child: StreamBuilder<QuerySnapshot>(
-              stream: db.collection("ukumbi").snapshots(),
+              stream: db.collection("accessories").snapshots(),
               builder: ((context, AsyncSnapshot<QuerySnapshot> snapshot) {
                 if (snapshot.hasError) {
                   return const Padding(
                     padding: EdgeInsets.all(28.0),
-                    child: Text("Tatizo limejitokeza..."),
+                    child: Text("There was a problem"),
                   );
                 }
                 if (!snapshot.hasData) {
                   const Padding(
                     padding: EdgeInsets.all(28.0),
-                    child: Text("Hakuna taarifa"),
+                    child: Text("No data"),
                   );
                 }
                 if (snapshot.connectionState == ConnectionState.waiting) {
@@ -50,7 +50,18 @@ class SuccessfulScreen extends StatelessWidget {
                 if (items.isEmpty) {
                   return Column(
                     mainAxisSize: MainAxisSize.min,
-                    children: [BannerCarousel(), Text("Hakuna kumbi kwa sasa")],
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        "Welcome to WARMA",
+                        style: Theme.of(context)
+                            .textTheme
+                            .headline4!
+                            .copyWith(color: Colors.black),
+                      ),
+                      BannerCarousel(),
+                      Text("Currently no data")
+                    ],
                   );
                 }
 
@@ -60,7 +71,15 @@ class SuccessfulScreen extends StatelessWidget {
                       if (index == 0) {
                         return Column(
                           mainAxisSize: MainAxisSize.min,
+                          crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
+                            Text(
+                              "Welcome to WARMA",
+                              style: Theme.of(context)
+                                  .textTheme
+                                  .headline4!
+                                  .copyWith(color: Colors.black),
+                            ),
                             BannerCarousel(),
                             InkWell(
                               onTap: () {
@@ -70,78 +89,7 @@ class SuccessfulScreen extends StatelessWidget {
                                       ukumbi: items[index]);
                                 }));
                               },
-                              child: Card(
-                                child: Padding(
-                                  padding: EdgeInsets.all(20),
-                                  child: Column(
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.start,
-                                      children: [
-                                        Image.network(
-                                            items[index].get("image") != 'null'
-                                                ? items[index].get("image")
-                                                : images[0],
-                                            width: double.infinity,
-                                            height: 100,
-                                            fit: BoxFit.cover),
-                                        SizedBox(height: 10),
-                                        Text(
-                                          items[index].get('name'),
-                                          style: Theme.of(context)
-                                              .textTheme
-                                              .headline5!
-                                              .copyWith(color: Colors.black),
-                                        ),
-                                        SizedBox(height: 10),
-                                        Row(
-                                          children: [
-                                            Text("Hali: "),
-                                            Container(
-                                              child: Text("Unapatikana",
-                                                  style:
-                                                      TextStyle(fontSize: 12)),
-                                              padding: EdgeInsets.symmetric(
-                                                  vertical: 4, horizontal: 8),
-                                              decoration: BoxDecoration(
-                                                  borderRadius:
-                                                      BorderRadius.circular(10),
-                                                  color: Colors.grey.shade200),
-                                            ),
-                                            Spacer(),
-                                            Text("Aina: "),
-                                            Container(
-                                              child: Text(
-                                                items[index].get('category'),
-                                                style: TextStyle(fontSize: 12),
-                                              ),
-                                              padding: EdgeInsets.symmetric(
-                                                  vertical: 4, horizontal: 8),
-                                              decoration: BoxDecoration(
-                                                  borderRadius:
-                                                      BorderRadius.circular(10),
-                                                  color: Colors.grey.shade200),
-                                            )
-                                          ],
-                                        ),
-                                        SizedBox(
-                                          height: 10,
-                                        ),
-                                        Text("Bei: "),
-                                        Container(
-                                          child: Text(
-                                            "TZS ${items[index].get('price')}",
-                                            style: TextStyle(fontSize: 12),
-                                          ),
-                                          padding: EdgeInsets.symmetric(
-                                              vertical: 4, horizontal: 8),
-                                          decoration: BoxDecoration(
-                                              borderRadius:
-                                                  BorderRadius.circular(10),
-                                              color: Colors.grey.shade200),
-                                        ),
-                                      ]),
-                                ),
-                              ),
+                              child: customCard(items, index, context),
                             )
                           ],
                         );
@@ -153,75 +101,48 @@ class SuccessfulScreen extends StatelessWidget {
                             return UkumbiDetailScreen(ukumbi: items[index]);
                           }));
                         },
-                        child: Card(
-                          child: Padding(
-                            padding: EdgeInsets.all(20),
-                            child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Image.network(
-                                      items[index].get("image") != "null"
-                                          ? items[index].get("image")
-                                          : images[0],
-                                      width: double.infinity,
-                                      height: 100,
-                                      fit: BoxFit.cover),
-                                  SizedBox(height: 10),
-                                  Text(
-                                    items[index].get('name'),
-                                    style: Theme.of(context)
-                                        .textTheme
-                                        .headline5!
-                                        .copyWith(color: Colors.black),
-                                  ),
-                                  SizedBox(height: 10),
-                                  Row(
-                                    children: [
-                                      Text("Hali: "),
-                                      Container(
-                                        child: Text("Unapatikana",
-                                            style: TextStyle(fontSize: 12)),
-                                        padding: EdgeInsets.symmetric(
-                                            vertical: 4, horizontal: 8),
-                                        decoration: BoxDecoration(
-                                            borderRadius:
-                                                BorderRadius.circular(10),
-                                            color: Colors.grey.shade200),
-                                      ),
-                                      Spacer(),
-                                      Text("Aina: "),
-                                      Container(
-                                        child: Text(
-                                          items[index].get('category'),
-                                          style: TextStyle(fontSize: 12),
-                                        ),
-                                        padding: EdgeInsets.symmetric(
-                                            vertical: 4, horizontal: 8),
-                                        decoration: BoxDecoration(
-                                            borderRadius:
-                                                BorderRadius.circular(10),
-                                            color: Colors.grey.shade200),
-                                      )
-                                    ],
-                                  ), SizedBox(height: 10,),
-                                   Text("Bei: "),
-                                  Container(
-                                    child: Text(
-                                      "TZS ${items[index].get('price')}",
-                                      style: TextStyle(fontSize: 12),
-                                    ),
-                                    padding: EdgeInsets.symmetric(
-                                        vertical: 4, horizontal: 8),
-                                    decoration: BoxDecoration(
-                                        borderRadius: BorderRadius.circular(10),
-                                        color: Colors.grey.shade200),
-                                  ),
-                                ]),
-                          ),
-                        ),
+                        child: customCard(items, index, context),
                       );
                     });
               }))),
+    );
+  }
+
+  Card customCard(List<QueryDocumentSnapshot<Object?>> items, int index,
+      BuildContext context) {
+    return Card(
+      child: Padding(
+        padding: EdgeInsets.all(20),
+        child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+          Image.network(
+              items[index].get("image") != 'null'
+                  ? items[index].get("image")
+                  : images[0],
+              width: double.infinity,
+              height: 150,
+              fit: BoxFit.cover),
+          SizedBox(height: 10),
+          Text(
+            items[index].get('name'),
+            style: Theme.of(context)
+                .textTheme
+                .headline5!
+                .copyWith(color: Colors.black),
+          ),
+          SizedBox(height: 10),
+          SizedBox(
+            height: 10,
+          ),
+          Text("Price: "),
+          Container(
+            child: Text(
+              "TZS ${items[index].get('price')}",
+              style: TextStyle(fontSize: 12),
+            ),
+            padding: EdgeInsets.symmetric(vertical: 4, horizontal: 8),
+          ),
+        ]),
+      ),
     );
   }
 }

@@ -4,6 +4,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 class AuthenticationHelper {
   final FirebaseAuth _auth = FirebaseAuth.instance;
   get user => _auth.currentUser;
+  get isAdmin => _auth.currentUser!.email == "admin@machinga.com";
 
   get test => "Auth";
 
@@ -12,8 +13,7 @@ class AuthenticationHelper {
 
   //SIGN UP METHOD
   Future signUp(
-      {
-      required String email,
+      {required String email,
       required String password,
       required String phone,
       required String role,
@@ -26,7 +26,7 @@ class AuthenticationHelper {
       final currentUser = result.user!;
       users.doc(currentUser.uid).set({
         "name": name,
-        "role":role,
+        "role": role,
         "phone": phone,
         "verified": currentUser.emailVerified,
         "email": currentUser.email,

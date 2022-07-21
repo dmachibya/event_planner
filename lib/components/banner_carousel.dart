@@ -13,7 +13,7 @@ class BannerCarousel extends StatefulWidget {
 class _BannerCarouselState extends State<BannerCarousel> {
   int pageIndex = 0;
 
-  List<String> items = ["Kodi kwa urahisi", "Kumbi zipo kwa tukio lako"];
+  // List<String> items = ["Kodi kwa urahisi", "Kumbi zipo kwa tukio lako"];
 
   @override
   Widget build(BuildContext context) {
@@ -28,7 +28,7 @@ class _BannerCarouselState extends State<BannerCarousel> {
       child: Stack(
         children: [
           CarouselSlider.builder(
-            itemCount: items.length,
+            itemCount: 3,
             itemBuilder: (context, index, pageIndex) => Container(
               margin: const EdgeInsets.only(bottom: 20),
               alignment: Alignment.bottomLeft,
@@ -36,23 +36,8 @@ class _BannerCarouselState extends State<BannerCarousel> {
               height: bannerHeight,
               decoration: BoxDecoration(
                 image: DecorationImage(
-                  image: AssetImage("images/pattern.jpg"),
+                  image: AssetImage("images/img${index + 1}.jpg"),
                   fit: BoxFit.cover,
-                ),
-              ),
-              child: Padding(
-                padding: EdgeInsets.only(
-                  left: 20,
-                  bottom: screenWidth > screenHeight
-                      ? 40
-                      : bannerHeight * (78 / 283),
-                ),
-                child: Text(
-                  items[index],
-                  style: TextStyle(
-                      fontSize: 28,
-                      color: Colors.black,
-                      fontWeight: FontWeight.bold),
                 ),
               ),
             ),
@@ -75,7 +60,7 @@ class _BannerCarouselState extends State<BannerCarousel> {
               mainAxisSize: MainAxisSize.min,
               children: [
                 ...List.generate(
-                  items.length,
+                  3,
                   (index) => AnimatedContainer(
                     margin: const EdgeInsets.only(right: 6),
                     duration: const Duration(milliseconds: 400),

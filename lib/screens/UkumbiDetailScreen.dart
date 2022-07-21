@@ -141,17 +141,17 @@ class _UkumbiDetailScreenState extends State<UkumbiDetailScreen> {
                     const SizedBox(
                       height: 8,
                     ),
-                    ReadMoreText(
-                      widget.ukumbi!.get("about"),
-                      trimLines: 2,
-                      style: TextStyle(color: Colors.grey.shade700),
-                      colorClickableText: Colors.pink,
-                      trimMode: TrimMode.Line,
-                      trimCollapsedText: 'Onesha yote',
-                      trimExpandedText: 'Onesha kidogo',
-                      moreStyle:
-                          TextStyle(fontSize: 14, fontWeight: FontWeight.bold),
-                    ),
+                    // ReadMoreText(
+                    //   widget.ukumbi!.get("about"),
+                    //   trimLines: 2,
+                    //   style: TextStyle(color: Colors.grey.shade700),
+                    //   colorClickableText: Colors.pink,
+                    //   trimMode: TrimMode.Line,
+                    //   trimCollapsedText: 'Onesha yote',
+                    //   trimExpandedText: 'Onesha kidogo',
+                    //   moreStyle:
+                    //       TextStyle(fontSize: 14, fontWeight: FontWeight.bold),
+                    // ),
                   ],
                 )),
           ])),
@@ -270,7 +270,7 @@ class _UkumbiDetailScreenState extends State<UkumbiDetailScreen> {
                           },
                     child: Text(widget.ukumbi.get('isBookedAccepted')
                         ? "Umechukuliwa"
-                        : "Kodi Sasa")))
+                        : "Rent now")))
             // DecoratedBox(
             //     decoration: BoxDecoration(
             //         gradient: LinearGradient(colors: [
