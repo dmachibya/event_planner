@@ -1,11 +1,9 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 
-import '../utils/authentication.dart';
-
 class KumbiUlizoKodiDetailScreen extends StatefulWidget {
   final ukumbi;
-  KumbiUlizoKodiDetailScreen({Key? key, required this.ukumbi})
+  const KumbiUlizoKodiDetailScreen({Key? key, required this.ukumbi})
       : super(key: key);
 
   @override
@@ -19,40 +17,40 @@ class _KumbiUlizoKodiDetailScreenState
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text("Maombi ya Kumbi Yako")),
+      appBar: AppBar(title: const Text("Maombi ya Kumbi Yako")),
       body: Padding(
         padding: const EdgeInsets.all(28.0),
         child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-          Text(
+          const Text(
             "Renting details",
             style: TextStyle(fontWeight: FontWeight.bold),
           ),
           Row(
             children: [
-              Text("Accessory"),
-              Spacer(),
+              const Text("Accessory"),
+              const Spacer(),
               Text(
                 widget.ukumbi.get('ukumbi_name'),
                 style: Theme.of(context).textTheme.headline5,
               )
             ],
           ),
-          SizedBox(height: 8),
+          const SizedBox(height: 8),
           Row(
             children: [
-              Text("Date"),
-              Spacer(),
+              const Text("Date"),
+              const Spacer(),
               Text(
                 widget.ukumbi.get('date'),
                 style: Theme.of(context).textTheme.headline5,
               )
             ],
           ),
-          Divider(),
-          SizedBox(
+          const Divider(),
+          const SizedBox(
             height: 20,
           ),
-          Text(
+          const Text(
             "Admin information",
             style: TextStyle(fontWeight: FontWeight.bold),
           ),
@@ -90,34 +88,34 @@ class _KumbiUlizoKodiDetailScreenState
                   children: [
                     Row(
                       children: [
-                        Text("Fullname"),
-                        Spacer(),
+                        const Text("Fullname"),
+                        const Spacer(),
                         Text(
                           item!.get('name'),
                           style: Theme.of(context).textTheme.headline6,
                         )
                       ],
                     ),
-                    SizedBox(
+                    const SizedBox(
                       height: 6,
                     ),
                     Row(
                       children: [
-                        Text("Phone Number"),
-                        Spacer(),
+                        const Text("Phone Number"),
+                        const Spacer(),
                         Text(
                           item!.get('phone'),
                           style: Theme.of(context).textTheme.headline6,
                         )
                       ],
                     ),
-                    SizedBox(
+                    const SizedBox(
                       height: 6,
                     ),
                     Row(
                       children: [
-                        Text("Email Address"),
-                        Spacer(),
+                        const Text("Email Address"),
+                        const Spacer(),
                         Text(
                           item!.get('email'),
                           style: Theme.of(context).textTheme.headline6,
@@ -127,11 +125,11 @@ class _KumbiUlizoKodiDetailScreenState
                   ],
                 );
               }),
-          Divider(),
-          SizedBox(
+          const Divider(),
+          const SizedBox(
             height: 20,
           ),
-          Text(
+          const Text(
             "Your request status",
             style: TextStyle(fontWeight: FontWeight.bold),
           ),

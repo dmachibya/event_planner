@@ -26,8 +26,9 @@ class AuthenticationHelper {
       final currentUser = result.user!;
       users.doc(currentUser.uid).set({
         "name": name,
-        "role": role,
+        "role": 0,
         "phone": phone,
+        "photo": "",
         "verified": currentUser.emailVerified,
         "email": currentUser.email,
       }).then((documentReference) {
@@ -64,5 +65,13 @@ class AuthenticationHelper {
     await _auth.signOut();
 
     print('signout');
+  }
+
+  Future resetPassword({required String email}) async {
+    await _auth
+        .sendPasswordResetEmail(email: email)
+        .then((value) {})
+        .catchError((e) {});
+    return null;
   }
 }

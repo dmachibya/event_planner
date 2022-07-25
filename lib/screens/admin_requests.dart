@@ -1,5 +1,5 @@
-import 'package:event_planner/screens/UkumbiDetailScreen.dart';
-import 'package:event_planner/screens/UkumbiRegisterScreen.dart';
+import 'package:event_planner/screens/warma_detailScreen.dart';
+import 'package:event_planner/screens/WarmaRegisterScreen.dart';
 import 'package:event_planner/screens/maombi_detail_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -139,9 +139,9 @@ class _MaombiKukodiScreenState extends State<MaombiKukodiScreen> {
                                                             MaombiDetailScreen(
                                                                 ukumbi: item)));
                                               } else if (value == 3) {
-                                                // print("here inside");
+                                                print("here inside ${item.id}");
                                                 db
-                                                    .collection("ukumbi")
+                                                    .collection("rentings")
                                                     .doc(item.id)
                                                     .delete();
                                               }

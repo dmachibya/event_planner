@@ -43,7 +43,7 @@ class _BannerCarouselState extends State<BannerCarousel> {
             ),
             options: CarouselOptions(
               initialPage: 0,
-              height: screenWidth > screenHeight ? 150 : (bannerHeight + 20),
+              height: 250,
               viewportFraction: 1,
               autoPlay: true,
               onPageChanged: (index, reason) {

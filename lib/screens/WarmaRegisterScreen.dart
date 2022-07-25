@@ -1,7 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:event_planner/components/CustomeDrawer.dart';
-import 'package:event_planner/models/Ukumbi.dart';
-import 'package:event_planner/screens/successful_screen.dart';
+import 'package:event_planner/screens/home_screen.dart';
 import 'package:event_planner/utils/authentication.dart';
 import 'package:event_planner/utils/constants.dart';
 import 'package:event_planner/utils/DB.dart';
@@ -11,13 +10,15 @@ import 'dart:io';
 
 import 'package:go_router/go_router.dart';
 
-class UkumbiRegisterScreen extends StatefulWidget {
-  UkumbiRegisterScreen({Key? key}) : super(key: key);
+import '../components/list_data.dart';
+
+class WarmaRegisterScreen extends StatefulWidget {
+  WarmaRegisterScreen({Key? key}) : super(key: key);
   @override
-  State<UkumbiRegisterScreen> createState() => _UkumbiRegisterScreenState();
+  State<WarmaRegisterScreen> createState() => _WarmaRegisterScreenState();
 }
 
-class _UkumbiRegisterScreenState extends State<UkumbiRegisterScreen> {
+class _WarmaRegisterScreenState extends State<WarmaRegisterScreen> {
   DB _db = new DB();
   File? _photo;
 
@@ -40,7 +41,7 @@ class _UkumbiRegisterScreenState extends State<UkumbiRegisterScreen> {
   TextEditingController nameController = TextEditingController();
   TextEditingController priceController = TextEditingController();
   TextEditingController imageController = TextEditingController();
-  final ukumbiRegisterFormKey = GlobalKey<FormState>();
+  final WarmaRegisterFormKey = GlobalKey<FormState>();
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -49,7 +50,7 @@ class _UkumbiRegisterScreenState extends State<UkumbiRegisterScreen> {
       ),
       body: Container(
         child: Form(
-          key: ukumbiRegisterFormKey,
+          key: WarmaRegisterFormKey,
           child: SingleChildScrollView(
             child: Form(
               key: _formKey,
@@ -73,42 +74,48 @@ class _UkumbiRegisterScreenState extends State<UkumbiRegisterScreen> {
                       ),
                     ),
                   ),
-                  // Container(
-                  //   margin: EdgeInsets.all(8),
-                  //   padding: EdgeInsets.all(8),
-                  //   child: Column(
-                  //     children: [
-                  //       DropdownSearch<String>(
-                  //         mode: Mode.MENU,
-                  //         popupBackgroundColor: Colors.white,
-                  //         showSelectedItems: true,
-                  //         items: Ukumbi.categories,
-                  //         dropdownSearchDecoration: InputDecoration(
-                  //           label: Text("Aina ya Ukumbi"),
-                  //         ),
-                  //         // popupItemDisabled: (String s) => s.startsWith('I'),
-                  //         onChanged: (data) {
-                  //           setState(() {
-                  //             categoryController.text = data as String;
-                  //           });
-                  //         },
-                  //         selectedItem: Ukumbi.categories[0],
-                  //       ),
-                  //       categoryError
-                  //           ? Text("Aina ya ukumbi inatakiwa")
-                  //           : Text(''),
-                  //     ],
-                  //   ),
-                  // ),
-                  // Container(
-                  //     padding: EdgeInsets.all(8),
-                  //     margin: EdgeInsets.all(8),
-                  //     child: TextFormField(
-                  //       controller: aboutController,
-                  //       maxLines: 2,
-                  //       decoration:
-                  //           InputDecoration(label: Text("Kuhusu Ukumbi")),
-                  //     )),
+                  Container(
+                    margin: EdgeInsets.all(8),
+                    padding: EdgeInsets.all(8),
+                    child: Column(
+                      children: [
+                        DropdownSearch<String>(
+                          mode: Mode.MENU,
+                          popupBackgroundColor: Colors.white,
+                          showSelectedItems: true,
+                          items: categories_string,
+                          dropdownSearchDecoration: InputDecoration(
+                            label: Text("Aina ya Warma"),
+                          ),
+                          // popupItemDisabled: (String s) => s.startsWith('I'),
+                          onChanged: (data) {
+                            setState(() {
+                              categoryController.text = data as String;
+                            });
+                          },
+                          selectedItem: categories_string[0],
+                        ),
+                        categoryError
+                            ? Text("Aina ya Warma inatakiwa")
+                            : Text(''),
+                      ],
+                    ),
+                  ),
+                  Container(
+                      padding: EdgeInsets.all(8),
+                      margin: EdgeInsets.all(8),
+                      child: TextFormField(
+                        validator: (value) {
+                          if (value == null || value.isEmpty) {
+                            return 'Description must be filled';
+                          }
+
+                          return null;
+                        },
+                        controller: aboutController,
+                        maxLines: 3,
+                        decoration: InputDecoration(label: Text("Description")),
+                      )),
                   // Container(
                   //     padding: EdgeInsets.all(8),
                   //     margin: EdgeInsets.all(8),
@@ -128,7 +135,7 @@ class _UkumbiRegisterScreenState extends State<UkumbiRegisterScreen> {
                         int val = int.tryParse(value) ?? 0;
 
                         if (val == 0) {
-                          return "Please fill in the price";
+                          return "Please fill in the price as number";
                         }
 
                         return null;
@@ -204,10 +211,7 @@ class _UkumbiRegisterScreenState extends State<UkumbiRegisterScreen> {
                                   FirebaseFirestore.instance
                                       .collection("accessories")
                                       .add({
-                                    "category":
-                                        categoryController.text.length <= 0
-                                            ? "Sherehe"
-                                            : categoryController.text,
+                                    "category": categoryController.text,
                                     "about": aboutController.text,
                                     "location": locationController.text,
                                     "name": nameController.text,
@@ -262,7 +266,7 @@ class _UkumbiRegisterScreenState extends State<UkumbiRegisterScreen> {
                                     ScaffoldMessenger.of(context).showSnackBar(
                                         SnackBar(
                                             content: Text(
-                                                "Tatizo limejitokeza, jaribu tena")));
+                                                "There was a problem, try again later")));
                                   });
                                 }
                               }

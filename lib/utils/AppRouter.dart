@@ -1,19 +1,20 @@
-import 'package:event_planner/models/Ukumbi.dart';
-import 'package:event_planner/screens/UkumbiListView.dart';
-import 'package:event_planner/screens/UkumbiRegisterScreen.dart';
+import 'package:event_planner/components/main_nav.dart';
+import 'package:event_planner/screens/WarmaRegisterScreen.dart';
+import 'package:event_planner/screens/admin_screen.dart';
 import 'package:event_planner/screens/client_requests.dart';
-import 'package:event_planner/screens/kumbi_zako_screen.dart';
+import 'package:event_planner/screens/forgot_password.dart';
+import 'package:event_planner/screens/your_accessories_screen.dart';
 import 'package:event_planner/screens/admin_requests.dart';
 import 'package:flutter/material.dart';
 import 'package:event_planner/screens/LoginScreen.dart';
 import 'package:event_planner/screens/RegisterScreen.dart';
 import 'package:event_planner/screens/landing_screen.dart';
-import 'package:event_planner/screens/successful_screen.dart';
+import 'package:event_planner/screens/home_screen.dart';
 import 'package:event_planner/utils/constants.dart';
 import 'package:splash_screen_view/SplashScreenView.dart';
 import 'package:go_router/go_router.dart';
 
-import '../screens/UkumbiDetailScreen.dart';
+import '../screens/warma_detailScreen.dart';
 import 'authentication.dart';
 
 class AppRouter {
@@ -38,15 +39,23 @@ class AppRouter {
                 return RegisterScreen();
               },
             ),
+            GoRoute(
+              path: 'forgot_password',
+              builder: (context, state) {
+                return ForgotPassword();
+              },
+            ),
           ]),
       GoRoute(
           path: '/home',
           builder: (context, state) {
-            return SuccessfulScreen();
+            return MainNav(
+              index: 0,
+            );
           },
           redirect: (_) {
             if (AuthenticationHelper().user == null) {
-              return '/welcome';
+              return '/login';
             }
             return null;
           },
@@ -54,7 +63,13 @@ class AppRouter {
             GoRoute(
                 path: 'ukumbi_register',
                 builder: (context, state) {
-                  return UkumbiRegisterScreen();
+                  return WarmaRegisterScreen();
+                },
+                routes: []),
+            GoRoute(
+                path: 'users',
+                builder: (context, state) {
+                  return AdminScreen();
                 },
                 routes: []),
             GoRoute(
@@ -66,7 +81,7 @@ class AppRouter {
             GoRoute(
                 path: 'kumbi_ulizokodi',
                 builder: (context, state) {
-                  return KumbiUlizoKodiScreen();
+                  return ClientRequestsScreen();
                 },
                 routes: []),
             GoRoute(

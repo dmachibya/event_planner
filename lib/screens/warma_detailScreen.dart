@@ -8,6 +8,7 @@ import 'package:dropdown_search/dropdown_search.dart';
 import 'package:readmore/readmore.dart';
 import 'package:intl/intl.dart';
 import 'package:event_planner/utils/DB.dart';
+import 'package:twilio_flutter/twilio_flutter.dart';
 
 class UkumbiDetailScreen extends StatefulWidget {
   final dynamic ukumbi;
@@ -136,22 +137,23 @@ class _UkumbiDetailScreenState extends State<UkumbiDetailScreen> {
                           TextStyle(fontSize: 28, fontWeight: FontWeight.bold),
                     ),
                     const SizedBox(
-                      height: 8,
+                      height: 16,
                     ),
+                    Text("Category: ${widget.ukumbi!.get("category")}"),
                     const SizedBox(
                       height: 8,
                     ),
-                    // ReadMoreText(
-                    //   widget.ukumbi!.get("about"),
-                    //   trimLines: 2,
-                    //   style: TextStyle(color: Colors.grey.shade700),
-                    //   colorClickableText: Colors.pink,
-                    //   trimMode: TrimMode.Line,
-                    //   trimCollapsedText: 'Onesha yote',
-                    //   trimExpandedText: 'Onesha kidogo',
-                    //   moreStyle:
-                    //       TextStyle(fontSize: 14, fontWeight: FontWeight.bold),
-                    // ),
+                    ReadMoreText(
+                      widget.ukumbi!.get("about"),
+                      trimLines: 2,
+                      style: TextStyle(color: Colors.grey.shade700),
+                      colorClickableText: Colors.pink,
+                      trimMode: TrimMode.Line,
+                      trimCollapsedText: 'Onesha yote',
+                      trimExpandedText: 'Onesha kidogo',
+                      moreStyle:
+                          TextStyle(fontSize: 14, fontWeight: FontWeight.bold),
+                    ),
                   ],
                 )),
           ])),
@@ -212,48 +214,104 @@ class _UkumbiDetailScreenState extends State<UkumbiDetailScreen> {
                             } else {
                               try {
                                 if (result != null && result == true) {
-                                  // List array =
-                                  //     widget.ukumbi.get('isBookedDate');
-                                  // array.add(selectedBookingDateController.text);
-                                  bool updated = await _db.update(
-                                      collection: "accessories",
-                                      docsId: widget.ukumbi.id,
-                                      data: {
-                                        "isBooked": true,
-                                        "isBookedAccepted": false,
-                                        "isBookedDate":
-                                            selectedBookingDateController.text,
-                                      });
-
-                                  await FirebaseFirestore.instance
-                                      .collection("rentings")
-                                      .add({
-                                    "date": selectedBookingDateController.text,
-                                    "user_booked":
-                                        AuthenticationHelper().user.uid,
-                                    "user_owns": widget.ukumbi.get('user_id'),
-                                    "status": 0,
-                                    "ukumbi_id": widget.ukumbi.id,
-                                    "ukumbi_name": widget.ukumbi.get('name'),
-                                    "ukumbi_price": widget.ukumbi.get('price'),
-                                  });
-
-                                  if (updated) {
+                                  print("here------");
+                                  print(DateFormat("dd/MM/yyyy")
+                                      .format(DateTime.now()));
+                                  print(selectedBookingDateController.text);
+                                  print("here------");
+                                  // .format(DateTime.now()));
+                                  if (int.parse(selectedBookingDateController
+                                          .text
+                                          .replaceAll("/", "")) <=
+                                      int.parse(DateFormat("dd/MM/yyyy")
+                                          .format(
+                                            DateTime.now(),
+                                          )
+                                          .replaceAll("/", ""))) {
                                     ScaffoldMessenger.of(context)
                                         .showSnackBar(const SnackBar(
-                                      backgroundColor: Colors.green,
-                                      content: Text("Request successfully sent",
-                                          style: TextStyle(fontSize: 16)),
-                                      duration: Duration(seconds: 3),
+                                      backgroundColor: Colors.red,
+                                      content:
+                                          Text("Please choose a future data"),
+                                    ));
+                                  } else if (widget.ukumbi.get('isBooked') ==
+                                          true &&
+                                      widget.ukumbi.get('isBookedDate') ==
+                                          selectedBookingDateController.text) {
+                                    ScaffoldMessenger.of(context)
+                                        .showSnackBar(const SnackBar(
+                                      backgroundColor: Colors.red,
+                                      content:
+                                          Text("Already booked on that date"),
                                     ));
                                   } else {
-                                    ScaffoldMessenger.of(context)
-                                        .showSnackBar(const SnackBar(
-                                      content: Text(
-                                          "There was a problem, renting failed",
-                                          style: TextStyle(fontSize: 16)),
-                                      duration: Duration(seconds: 7),
-                                    ));
+                                    // List array =
+                                    //     widget.ukumbi.get('isBookedDate');
+                                    // array.add(selectedBookingDateController.text);
+                                    bool updated = await _db.update(
+                                        collection: "accessories",
+                                        docsId: widget.ukumbi.id,
+                                        data: {
+                                          "isBooked": true,
+                                          "isBookedAccepted": false,
+                                          "isBookedDate":
+                                              selectedBookingDateController
+                                                  .text,
+                                        });
+
+                                    await FirebaseFirestore.instance
+                                        .collection("rentings")
+                                        .add({
+                                      "date":
+                                          selectedBookingDateController.text,
+                                      "user_booked":
+                                          AuthenticationHelper().user.uid,
+                                      "user_owns": widget.ukumbi.get('user_id'),
+                                      "status": 0,
+                                      "ukumbi_id": widget.ukumbi.id,
+                                      "ukumbi_name": widget.ukumbi.get('name'),
+                                      "ukumbi_price":
+                                          widget.ukumbi.get('price'),
+                                    }).then((value) {
+                                      TwilioFlutter twilioFlutter =
+                                          TwilioFlutter(
+                                              accountSid:
+                                                  'AC654dd3a61b0d9fd1826ac251752995cb', // replace *** with Account SID
+                                              authToken:
+                                                  'd94431e5df6dac77262a2f007e0d934f', // replace xxx with Auth Token
+                                              twilioNumber:
+                                                  '+18573746722' // replace .... with Twilio Number
+                                              );
+
+                                      twilioFlutter
+                                          .sendSMS(
+                                              toNumber: "+255766727133",
+                                              messageBody:
+                                                  '\n You have new request on WARMA, please check out.')
+                                          .then((value) {})
+                                          .catchError((val) {
+                                        print(val);
+                                      });
+                                    });
+
+                                    if (updated) {
+                                      ScaffoldMessenger.of(context)
+                                          .showSnackBar(const SnackBar(
+                                        backgroundColor: Colors.green,
+                                        content: Text(
+                                            "Request successfully sent",
+                                            style: TextStyle(fontSize: 16)),
+                                        duration: Duration(seconds: 3),
+                                      ));
+                                    } else {
+                                      ScaffoldMessenger.of(context)
+                                          .showSnackBar(const SnackBar(
+                                        content: Text(
+                                            "There was a problem, renting failed",
+                                            style: TextStyle(fontSize: 16)),
+                                        duration: Duration(seconds: 7),
+                                      ));
+                                    }
                                   }
                                 }
                               } catch (e) {

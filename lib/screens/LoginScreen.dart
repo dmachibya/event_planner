@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:event_planner/utils/authentication.dart';
 import 'package:event_planner/utils/constants.dart';
 import 'package:go_router/go_router.dart';
-import 'successful_screen.dart';
+import 'home_screen.dart';
 
 class LoginScreen extends StatefulWidget {
   LoginScreen({Key? key}) : super(key: key);
@@ -95,6 +95,20 @@ class _LoginScreenState extends State<LoginScreen> {
                         fontStyle: FontStyle.italic),
                   ),
                   keyboardType: TextInputType.visiblePassword,
+                ),
+                SizedBox(height: 8),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.end,
+                  children: [
+                    InkWell(
+                        onTap: () {
+                          GoRouter.of(context).go('/login/forgot_password');
+                        },
+                        child: Text(
+                          "Forgot password?",
+                          style: TextStyle(color: Colors.pink),
+                        ))
+                  ],
                 ),
                 SizedBox(height: 20),
                 ElevatedButton(

@@ -1,6 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:event_planner/screens/UkumbiRegisterScreen.dart';
-import 'package:event_planner/screens/successful_screen.dart';
+import 'package:event_planner/screens/WarmaRegisterScreen.dart';
+import 'package:event_planner/screens/home_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:event_planner/utils/constants.dart';
 import 'package:event_planner/utils/authentication.dart';

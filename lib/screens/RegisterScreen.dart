@@ -4,7 +4,7 @@ import 'package:event_planner/utils/constants.dart';
 import 'package:go_router/go_router.dart';
 // import 'package:provider/provider.dart';
 // import '../Models/auth.dart';
-import 'successful_screen.dart';
+import 'home_screen.dart';
 
 class RegisterScreen extends StatefulWidget {
   RegisterScreen({Key? key}) : super(key: key);
